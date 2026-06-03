@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notícias da Copa – Copa do Mundo FIFA 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      overflow: hidden;
+      height: 1080px;
+      width: 1920px;
+    }
+    
+    .news-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(1080px - 150px);
+      padding: 0 100px;
+      z-index: 10;
+      position: relative;
+    }
+
+    .news-container {
+      width: 100%;
+      max-width: 1200px;
+      height: 500px;
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .news-card {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 215, 0, 0.18);
+      border-radius: 30px;
+      padding: 60px 80px;
+      backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.05);
+      opacity: 0;
+      transform: translateY(50px) scale(0.95);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .news-card.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .news-card.exit {
+      opacity: 0;
+      transform: translateY(-50px) scale(0.95);
+    }
+
+    .news-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid rgba(255, 215, 0, 0.2);
+      padding-bottom: 24px;
+    }
+
+    .news-badge {
+      font-family: var(--font-head);
+      font-size: 0.8rem;
+      font-weight: 900;
+      letter-spacing: 0.25em;
+      color: #000;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      padding: 6px 16px;
+      border-radius: 50px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    }
+
+    .news-time {
+      font-family: var(--font-head);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+    }
+
+    .news-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 40px 0;
+    }
+
+    .news-title {
+      font-family: var(--font-disp);
+      font-size: clamp(2.5rem, 5vw, 4.2rem);
+      line-height: 1.1;
+      color: #fff;
+      margin-bottom: 20px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .news-text {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: var(--subtext);
+      font-weight: 400;
+    }
+
+    .news-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .news-source {
+      font-size: 0.85rem;
+      color: var(--subtext);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .news-dots {
+      display: flex;
+      gap: 10px;
+    }
+
+    .news-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.3s;
+    }
+
+    .news-dot.active {
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
+      width: 24px;
+      border-radius: 10px;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .page-title h1 {
+      font-family: var(--font-disp);
+      font-size: 3.5rem;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      margin: 0;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.45);
+    }
+
+    .page-title p {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--subtext);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background animations -->
+  <canvas id="particleCanvas"></canvas>
+  <div class="scanlines"></div>
+
+  <!-- Header with Clocks -->
+  <header class="top-bar">
+    <div class="top-bar__left">
+      <div class="fifa-badge">
+        <span class="fifa-badge__top">FIFA</span>
+        <span class="fifa-badge__mid">⚽</span>
+        <span class="fifa-badge__bot">WORLD CUP</span>
+      </div>
+      <div class="host-flags">
+        <span class="flag">🇺🇸</span>
+        <span class="flag">🇨🇦</span>
+        <span class="flag">🇲🇽</span>
+        <span class="host-label">2026</span>
+      </div>
+    </div>
+    <div class="clocks-panel">
+      <div class="clock-card" id="clock-usa">
+        <span class="clock-card__flag">🇺🇸</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">NEW YORK / ET</span>
+          <span class="clock-card__time" id="time-usa">--:--:--</span>
+          <span class="clock-card__date" id="date-usa">-- --- ----</span>
+        </div>
+      </div>
+      <div class="clock-divider"></div>
+      <div class="clock-card" id="clock-bra">
+        <span class="clock-card__flag">🇧🇷</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">BRASÍLIA / BRT</span>
+          <span class="clock-card__time" id="time-bra">--:--:--</span>
+          <span class="clock-card__date" id="date-bra">-- --- ----</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- News Cards Screen -->
+  <div class="news-wrapper">
+    <div class="page-title">
+      <h1>⚡ BOLETIM DE NOTÍCIAS</h1>
+      <p>COPA DO MUNDO FIFA 2026 · ATUALIZAÇÕES EM TEMPO REAL</p>
+    </div>
+
+    <div class="news-container" id="newsContainer">
+      <!-- Cards rendered dynamically by JS -->
+    </div>
+  </div>
+
+  <footer class="footer" style="position: fixed; bottom: 0; left: 0; right: 0;">
+    <span>© 2026 Copa do Mundo FIFA · Transmissão 24h · Boletim de Notícias</span>
+    <span class="footer-live"><span class="live-dot"></span> AO VIVO</span>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  <script>
+    // Dual clocks
+    const DAYS_SHORT = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const MONTHS_SHORT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    
+    function pad(n) { return String(n).padStart(2, '0'); }
+    
+    function formatTime(date) {
+      return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    }
+    
+    function formatDate(date) {
+      return `${DAYS_SHORT[date.getDay()]}, ${pad(date.getDate())} ${MONTHS_SHORT[date.getMonth()]} ${date.getFullYear()}`;
+    }
+    
+    function getTimeInZone(offsetHours) {
+      const now = new Date();
+      const utcMs = now.getTime() + now.getTimezoneOffset() * 60_000;
+      return new Date(utcMs + offsetHours * 3_600_000);
+    }
+    
+    function updateClocks() {
+      const usa = getTimeInZone(-4);
+      document.getElementById('time-usa').textContent = formatTime(usa);
+      document.getElementById('date-usa').textContent = formatDate(usa);
+      const bra = getTimeInZone(-3);
+      document.getElementById('time-bra').textContent = formatTime(bra);
+      document.getElementById('date-bra').textContent = formatDate(bra);
+    }
+    
+    updateClocks();
+    setInterval(updateClocks, 1000);
+
+    // Particles system
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    
+    function resizeCanvas() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    
+    function createParticle() {
+      return {
+        x: Math.random() * W,
+        y: H + 20,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: -(Math.random() * 0.5 + 0.2),
+        alpha: Math.random() * 0.4 + 0.1,
+        size: Math.random() * 10 + 4,
+        rotate: Math.random() * Math.PI * 2,
+        rotateSpeed: (Math.random() - 0.5) * 0.02,
+      };
+    }
+    
+    function animateParticles() {
+      ctx.clearRect(0, 0, W, H);
+      if (particles.length < 40) {
+        particles.push(createParticle());
+      }
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotate += p.rotateSpeed;
+        p.alpha -= 0.0003;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotate);
+        ctx.font = `${p.size}px serif`;
+        ctx.fillStyle = 'rgba(255, 215, 0, 0.4)';
+        ctx.fillText('⚽', 0, 0);
+        ctx.restore();
+        if (p.y < -20 || p.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    animateParticles();
+
+    // News rotation logic
+    const DEFAULT_NEWS = [
+      {
+        titulo: "MAIOR COPA DA HISTÓRIA",
+        texto: "A Copa do Mundo FIFA 2026 nos EUA, Canadá e México será a primeira com 48 seleções participantes, resultando em um recorde de 104 jogos emocionantes.",
+        hora: "09:00"
+      },
+      {
+        titulo: "SELEÇÃO BRASILEIRA PREPARADA",
+        texto: "Comissão técnica inicia planejamento e monitoramento intensivo dos atletas para garantir força máxima na busca pelo hexacampeonato mundial.",
+        hora: "11:30"
+      },
+      {
+        titulo: "METLIFE SEDIA A DECISÃO",
+        texto: "O MetLife Stadium em Nova York / Nova Jersey foi oficialmente escolhido como o palco da grande final da Copa do Mundo em 19 de julho de 2026.",
+        hora: "14:15"
+      },
+      {
+        titulo: "AZTECA ENTRA PARA A HISTÓRIA",
+        texto: "O icônico Estádio Azteca na Cidade do México se tornará o primeiro estádio do mundo a sediar três partidas de abertura de Copa do Mundo (1970, 1986 e 2026).",
+        hora: "16:45"
+      },
+      {
+        titulo: "TRANSMISSÃO COMPLETA 24 HORAS",
+        texto: "Acompanhe notícias, curiosidades, classificação e placares ao vivo com atualização contínua em nossa transmissão 24h dedicada à Copa 2026.",
+        hora: "18:00"
+      }
+    ];
+
+    let newsData = [...DEFAULT_NEWS];
+    let currentIndex = 0;
+    let rotationInterval = null;
+
+    async function loadNews() {
+      if (CONFIG.SHEETS.noticias) {
+        try {
+          const rows = await CONTENT.getNoticias();
+          if (rows.length) {
+            // Map sheet columns to standard format
+            newsData = rows.map(r => ({
+              titulo: r.titulo || r.title || 'ATUALIZAÇÃO',
+              texto: r.texto || r.text || '',
+              hora: r.hora || r.time || 'Agora'
+            })).filter(n => n.texto);
+            
+            // Add default news at the end if the list is short
+            if (newsData.length < 3) {
+              newsData = [...newsData, ...DEFAULT_NEWS];
+            }
+          }
+        } catch (e) {
+          console.warn("Failed to load news from Sheet, using defaults", e);
+        }
+      }
+      renderCards();
+    }
+
+    function renderCards() {
+      const container = document.getElementById('newsContainer');
+      container.innerHTML = '';
+      
+      // Render cards
+      newsData.forEach((news, index) => {
+        const card = document.createElement('div');
+        card.className = `news-card${index === 0 ? ' active' : ''}`;
+        card.id = `card-${index}`;
+        card.innerHTML = `
+          <div class="news-header">
+            <span class="news-badge">EXCLUSIVO</span>
+            <span class="news-time">🕒 ${news.hora}</span>
+          </div>
+          <div class="news-content">
+            <h2 class="news-title">${news.titulo}</h2>
+            <p class="news-text">${news.texto}</p>
+          </div>
+          <div class="news-footer">
+            <span class="news-source">⚽ COPA 2026 AO VIVO</span>
+            <div class="news-dots" id="dots-${index}"></div>
+          </div>
+        `;
+        container.appendChild(card);
+        
+        // Add navigation dots
+        const dotsContainer = card.querySelector('.news-dots');
+        newsData.forEach((_, dIdx) => {
+          const dot = document.createElement('div');
+          dot.className = `news-dot${dIdx === index ? ' active' : ''}`;
+          dotsContainer.appendChild(dot);
+        });
+      });
+      
+      currentIndex = 0;
+      startRotation();
+    }
+
+    function showNextCard() {
+      if (newsData.length <= 1) return;
+      
+      const currentCard = document.getElementById(`card-${currentIndex}`);
+      currentCard.classList.remove('active');
+      currentCard.classList.add('exit');
+      
+      // Wait for exit animation, then reset it
+      setTimeout(() => {
+        currentCard.classList.remove('exit');
+      }, 800);
+      
+      currentIndex = (currentIndex + 1) % newsData.length;
+      
+      const nextCard = document.getElementById(`card-${currentIndex}`);
+      nextCard.classList.add('active');
+    }
+
+    function startRotation() {
+      if (rotationInterval) clearInterval(rotationInterval);
+      // Rotate news every 15 seconds
+      rotationInterval = setInterval(showNextCard, 15000);
+    }
+
+    // Initial load
+    loadNews();
+    
+    // Refresh sheet contents periodically
+    setInterval(loadNews, CONFIG.CONTENT_INTERVAL);
+  </script>
+</body>
+</html>

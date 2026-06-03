@@ -10,6 +10,8 @@ Plataforma completa para transmissão ao vivo da Copa do Mundo FIFA 2026 via OBS
 | `agenda.html` | `/agenda` | Agenda completa — 104 jogos |
 | `placar.html` | `/placar` | Placar ao vivo (auto-refresh 30s) |
 | `classificacao.html` | `/classificacao` | Tabela dos 12 grupos |
+| `noticias.html` | `/noticias` | Card de notícias com transição rotativa |
+| `curiosidades.html` | `/curiosidades` | Curiosidade do dia animada |
 | `overlay-ticker.html` | `/overlay-ticker` | 🔲 Faixa rodapé transparente |
 | `overlay-placar.html` | `/overlay-placar` | 🔲 Mini placar transparente (canto) |
 

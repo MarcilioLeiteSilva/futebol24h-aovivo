@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Curiosidades da Copa – Copa do Mundo FIFA 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      overflow: hidden;
+      height: 1080px;
+      width: 1920px;
+    }
+    
+    .curiosity-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(1080px - 150px);
+      padding: 0 100px;
+      z-index: 10;
+      position: relative;
+    }
+
+    .curiosity-container {
+      width: 100%;
+      max-width: 1100px;
+      height: 480px;
+      position: relative;
+      perspective: 1000px;
+    }
+
+    .curiosity-card {
+      position: absolute;
+      inset: 0;
+      background: rgba(2, 8, 18, 0.6);
+      border: 2px dashed rgba(255, 215, 0, 0.25);
+      border-radius: 30px;
+      padding: 60px 80px;
+      backdrop-filter: blur(25px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 50px rgba(255, 215, 0, 0.08);
+      opacity: 0;
+      transform: rotateY(-30deg) scale(0.92);
+      transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+    }
+
+    .curiosity-card.active {
+      opacity: 1;
+      transform: rotateY(0) scale(1);
+      pointer-events: auto;
+      border-style: solid;
+      border-color: rgba(255, 215, 0, 0.4);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 60px rgba(0, 212, 255, 0.15);
+    }
+
+    .curiosity-card.exit {
+      opacity: 0;
+      transform: rotateY(30deg) scale(0.92);
+    }
+
+    .curiosity-icon {
+      font-size: 4rem;
+      margin-bottom: 24px;
+      animation: pulseGlow 2s ease-in-out infinite;
+      filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+    }
+
+    .curiosity-text {
+      font-family: var(--font-body);
+      font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+      line-height: 1.5;
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 30px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .curiosity-meta {
+      font-family: var(--font-head);
+      font-size: 0.85rem;
+      font-weight: 900;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      background: rgba(255, 215, 0, 0.08);
+      padding: 8px 24px;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); }
+      50% { transform: scale(1.1); filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.8)); }
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .page-title h1 {
+      font-family: var(--font-disp);
+      font-size: 3.5rem;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      margin: 0;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.45);
+    }
+
+    .page-title p {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--subtext);
+    }
+
+    /* Ambient neon ring background */
+    .neon-ring {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 215, 0, 0.03);
+      box-shadow: 0 0 100px rgba(255, 215, 0, 0.03), inset 0 0 100px rgba(0, 212, 255, 0.02);
+      animation: rotateRing 20s linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes rotateRing {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.05); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background animations -->
+  <canvas id="particleCanvas"></canvas>
+  <div class="scanlines"></div>
+
+  <!-- Header with Clocks -->
+  <header class="top-bar">
+    <div class="top-bar__left">
+      <div class="fifa-badge">
+        <span class="fifa-badge__top">FIFA</span>
+        <span class="fifa-badge__mid">⚽</span>
+        <span class="fifa-badge__bot">WORLD CUP</span>
+      </div>
+      <div class="host-flags">
+        <span class="flag">🇺🇸</span>
+        <span class="flag">🇨🇦</span>
+        <span class="flag">🇲🇽</span>
+        <span class="host-label">2026</span>
+      </div>
+    </div>
+    <div class="clocks-panel">
+      <div class="clock-card" id="clock-usa">
+        <span class="clock-card__flag">🇺🇸</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">NEW YORK / ET</span>
+          <span class="clock-card__time" id="time-usa">--:--:--</span>
+          <span class="clock-card__date" id="date-usa">-- --- ----</span>
+        </div>
+      </div>
+      <div class="clock-divider"></div>
+      <div class="clock-card" id="clock-bra">
+        <span class="clock-card__flag">🇧🇷</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">BRASÍLIA / BRT</span>
+          <span class="clock-card__time" id="time-bra">--:--:--</span>
+          <span class="clock-card__date" id="date-bra">-- --- ----</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Curiosities Screen -->
+  <div class="curiosity-wrapper">
+    <div class="neon-ring"></div>
+    <div class="page-title">
+      <h1>💡 VOCÊ SABIA?</h1>
+      <p>CURIOSIDADES E CULTURA DA COPA DO MUNDO 2026</p>
+    </div>
+
+    <div class="curiosity-container" id="curiosityContainer">
+      <!-- Cards rendered dynamically by JS -->
+    </div>
+  </div>
+
+  <footer class="footer" style="position: fixed; bottom: 0; left: 0; right: 0;">
+    <span>© 2026 Copa do Mundo FIFA · Transmissão 24h · Curiosidades</span>
+    <span class="footer-live"><span class="live-dot"></span> AO VIVO</span>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  <script>
+    // Dual clocks
+    const DAYS_SHORT = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const MONTHS_SHORT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    
+    function pad(n) { return String(n).padStart(2, '0'); }
+    
+    function formatTime(date) {
+      return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    }
+    
+    function formatDate(date) {
+      return `${DAYS_SHORT[date.getDay()]}, ${pad(date.getDate())} ${MONTHS_SHORT[date.getMonth()]} ${date.getFullYear()}`;
+    }
+    
+    function getTimeInZone(offsetHours) {
+      const now = new Date();
+      const utcMs = now.getTime() + now.getTimezoneOffset() * 60_000;
+      return new Date(utcMs + offsetHours * 3_600_000);
+    }
+    
+    function updateClocks() {
+      const usa = getTimeInZone(-4);
+      document.getElementById('time-usa').textContent = formatTime(usa);
+      document.getElementById('date-usa').textContent = formatDate(usa);
+      const bra = getTimeInZone(-3);
+      document.getElementById('time-bra').textContent = formatTime(bra);
+      document.getElementById('date-bra').textContent = formatDate(bra);
+    }
+    
+    updateClocks();
+    setInterval(updateClocks, 1000);
+
+    // Particles system
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+    
+    function resizeCanvas() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    
+    function createParticle() {
+      return {
+        x: Math.random() * W,
+        y: H + 20,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: -(Math.random() * 0.5 + 0.2),
+        alpha: Math.random() * 0.4 + 0.1,
+        size: Math.random() * 10 + 4,
+        rotate: Math.random() * Math.PI * 2,
+        rotateSpeed: (Math.random() - 0.5) * 0.02,
+      };
+    }
+    
+    function animateParticles() {
+      ctx.clearRect(0, 0, W, H);
+      if (particles.length < 40) {
+        particles.push(createParticle());
+      }
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotate += p.rotateSpeed;
+        p.alpha -= 0.0003;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotate);
+        ctx.font = `${p.size}px serif`;
+        ctx.fillStyle = 'rgba(255, 215, 0, 0.4)';
+        ctx.fillText('⚽', 0, 0);
+        ctx.restore();
+        if (p.y < -20 || p.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      });
+      requestAnimationFrame(animateParticles);
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    animateParticles();
+
+    // Trivia rotation logic
+    const DEFAULT_TRIVIA = [
+      "A Copa de 2026 será a primeira da história a ser realizada em 3 países simultaneamente: Estados Unidos, Canadá e México.",
+      "O México se tornará o primeiro país do mundo a sediar a Copa do Mundo em três ocasiões diferentes (1970, 1986 e 2026).",
+      "O Estádio Azteca sediou duas finais históricas da Copa do Mundo: em 1970 (vencida pelo Brasil de Pelé) e em 1986 (vencida pela Argentina de Maradona).",
+      "Com 48 seleções divididas em 12 grupos de 4, a Copa de 2026 terá 104 partidas disputadas ao longo de 39 dias de competição.",
+      "O maior estádio em capacidade de público da Copa de 2026 será o MetLife Stadium em Nova York / Nova Jersey, com capacidade para mais de 82.500 torcedores, que sediará a grande final.",
+      "A Copa do Mundo de 2026 marcará a maior expansão do formato do torneio desde 1998, passando do modelo tradicional de 32 países para 48 seleções."
+    ];
+
+    let triviaData = [...DEFAULT_TRIVIA];
+    let currentIndex = 0;
+    let rotationInterval = null;
+
+    async function loadTrivia() {
+      if (CONFIG.SHEETS.curiosidades) {
+        try {
+          const rows = await CONTENT.getCuriosidades();
+          if (rows.length) {
+            // Map sheet columns to standard format
+            triviaData = rows.map(r => r.texto || r.curiosidade || r.fact || '').filter(t => t);
+            
+            // Add default trivia if list is short
+            if (triviaData.length < 3) {
+              triviaData = [...triviaData, ...DEFAULT_TRIVIA];
+            }
+          }
+        } catch (e) {
+          console.warn("Failed to load trivia from Sheet, using defaults", e);
+        }
+      }
+      renderCards();
+    }
+
+    function renderCards() {
+      const container = document.getElementById('curiosityContainer');
+      container.innerHTML = '';
+      
+      triviaData.forEach((text, index) => {
+        const card = document.createElement('div');
+        card.className = `curiosity-card${index === 0 ? ' active' : ''}`;
+        card.id = `card-${index}`;
+        card.innerHTML = `
+          <div class="curiosity-icon">💡</div>
+          <p class="curiosity-text">"${text}"</p>
+          <span class="curiosity-meta">FATO #0${index + 1}</span>
+        `;
+        container.appendChild(card);
+      });
+      
+      currentIndex = 0;
+      startRotation();
+    }
+
+    function showNextCard() {
+      if (triviaData.length <= 1) return;
+      
+      const currentCard = document.getElementById(`card-${currentIndex}`);
+      currentCard.classList.remove('active');
+      currentCard.classList.add('exit');
+      
+      setTimeout(() => {
+        currentCard.classList.remove('exit');
+      }, 900);
+      
+      currentIndex = (currentIndex + 1) % triviaData.length;
+      
+      const nextCard = document.getElementById(`card-${currentIndex}`);
+      nextCard.classList.add('active');
+    }
+
+    function startRotation() {
+      if (rotationInterval) clearInterval(rotationInterval);
+      // Rotate trivia every 18 seconds
+      rotationInterval = setInterval(showNextCard, 18000);
+    }
+
+    // Initial load
+    loadTrivia();
+    
+    // Refresh sheet contents periodically
+    setInterval(loadTrivia, CONFIG.CONTENT_INTERVAL);
+  </script>
+</body>
+</html>
