@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Overlay Ticker – Copa 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@600;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* TRANSPARENT BACKGROUND — required for OBS Browser Source */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { background:transparent !important; overflow:hidden; width:1920px; height:80px; }
+
+    .ticker-bar {
+      position:fixed; bottom:0; left:0; right:0; height:80px;
+      background:linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(3,12,28,.92) 50%,rgba(0,0,0,.92) 100%);
+      border-top:2px solid rgba(255,215,0,.5);
+      display:flex; align-items:center;
+      box-shadow:0 -4px 30px rgba(255,215,0,.15);
+      overflow:hidden;
+    }
+
+    /* FIFA badge left */
+    .ticker-brand {
+      flex-shrink:0; display:flex; align-items:center; gap:10px;
+      padding:0 20px; border-right:1px solid rgba(255,215,0,.3);
+      height:100%; background:rgba(255,215,0,.08);
+      z-index:2;
+    }
+    .ticker-brand-text {
+      display:flex; flex-direction:column; line-height:1;
+    }
+    .ticker-brand-top { font-family:'Orbitron',monospace; font-size:.55rem; font-weight:900; letter-spacing:.3em; color:#FFD700; }
+    .ticker-brand-bot { font-family:'Orbitron',monospace; font-size:.55rem; font-weight:700; letter-spacing:.2em; color:rgba(255,215,0,.7); }
+    .ticker-ball { font-size:1.4rem; }
+
+    /* live dot */
+    .live-indicator {
+      flex-shrink:0; display:flex; align-items:center; gap:6px;
+      padding:0 16px; border-right:1px solid rgba(255,215,0,.2);
+      font-family:'Orbitron',monospace; font-size:.6rem; font-weight:900; letter-spacing:.15em; color:#C8102E;
+    }
+    .live-dot { width:8px; height:8px; border-radius:50%; background:#C8102E; animation:ldot 1.2s ease-in-out infinite; }
+    @keyframes ldot{0%,100%{box-shadow:0 0 4px #C8102E}50%{box-shadow:0 0 14px #C8102E,0 0 24px rgba(200,16,46,.4)}}
+
+    /* scroll area */
+    .ticker-scroll { flex:1; overflow:hidden; position:relative; height:100%; }
+    .ticker-scroll::before,.ticker-scroll::after {
+      content:''; position:absolute; top:0; bottom:0; width:40px; z-index:1; pointer-events:none;
+    }
+    .ticker-scroll::before { left:0; background:linear-gradient(90deg,rgba(0,0,0,.85),transparent); }
+    .ticker-scroll::after  { right:0; background:linear-gradient(270deg,rgba(0,0,0,.85),transparent); }
+
+    .ticker-track {
+      display:flex; align-items:center; gap:0; height:100%;
+      animation:tickerScroll 60s linear infinite;
+      white-space:nowrap; width:max-content;
+    }
+    @keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+    .ticker-item {
+      display:inline-flex; align-items:center; gap:14px;
+      padding:0 40px; height:100%; border-right:1px solid rgba(255,215,0,.1);
+    }
+    .ticker-icon { font-size:1.1rem; flex-shrink:0; }
+    .ticker-text { font-family:'Inter',sans-serif; font-size:.85rem; font-weight:700; color:#F0F4FF; letter-spacing:.02em; }
+    .ticker-text.highlight { color:#FFD700; }
+
+    /* score items */
+    .ticker-score-item {
+      display:inline-flex; align-items:center; gap:10px;
+      padding:0 30px; height:100%; border-right:1px solid rgba(255,215,0,.1);
+    }
+    .sc-logo { width:22px; height:22px; object-fit:contain; filter:drop-shadow(0 0 4px rgba(255,255,255,.2)); }
+    .sc-name { font-family:'Inter',sans-serif; font-size:.75rem; font-weight:700; color:#F0F4FF; }
+    .sc-score { font-family:'Orbitron',monospace; font-size:.9rem; font-weight:900; color:#fff; padding:0 6px; }
+    .sc-live { font-family:'Orbitron',monospace; font-size:.55rem; font-weight:700; color:#C8102E; letter-spacing:.1em; animation:blink 1s step-end infinite; }
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+    /* clocks right */
+    .ticker-clocks {
+      flex-shrink:0; display:flex; align-items:center; gap:0;
+      border-left:1px solid rgba(255,215,0,.2); height:100%;
+    }
+    .tick-clock {
+      display:flex; align-items:center; gap:8px; padding:0 16px; height:100%;
+      border-left:1px solid rgba(255,215,0,.1);
+    }
+    .tick-clock-flag { font-size:1rem; }
+    .tick-clock-info { display:flex; flex-direction:column; gap:1px; }
+    .tick-clock-label { font-family:'Orbitron',monospace; font-size:.45rem; font-weight:700; letter-spacing:.15em; color:#FFD700; }
+    .tick-clock-time  { font-family:'Orbitron',monospace; font-size:.85rem; font-weight:700; color:#fff; letter-spacing:.04em; text-shadow:0 0 8px rgba(0,212,255,.5); }
+  </style>
+</head>
+<body>
+  <div class="ticker-bar">
+    <!-- Brand -->
+    <div class="ticker-brand">
+      <span class="ticker-ball">⚽</span>
+      <div class="ticker-brand-text">
+        <span class="ticker-brand-top">FIFA</span>
+        <span class="ticker-brand-bot">2026</span>
+      </div>
+    </div>
+    <!-- Live indicator -->
+    <div class="live-indicator"><div class="live-dot"></div>AO VIVO</div>
+    <!-- Scroll -->
+    <div class="ticker-scroll">
+      <div class="ticker-track" id="tickerTrack">
+        <div class="loading-tick">Carregando...</div>
+      </div>
+    </div>
+    <!-- Clocks -->
+    <div class="ticker-clocks">
+      <div class="tick-clock">
+        <span class="tick-clock-flag">🇺🇸</span>
+        <div class="tick-clock-info">
+          <span class="tick-clock-label">NY / ET</span>
+          <span class="tick-clock-time" id="t-usa">--:--</span>
+        </div>
+      </div>
+      <div class="tick-clock">
+        <span class="tick-clock-flag">🇧🇷</span>
+        <div class="tick-clock-info">
+          <span class="tick-clock-label">BRT</span>
+          <span class="tick-clock-time" id="t-bra">--:--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  <script>
+    function pad(n){return String(n).padStart(2,'0');}
+    function zoneDate(off){const n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*6e4+off*36e5);}
+    function updateClocks(){
+      const u=zoneDate(-4),b=zoneDate(-3);
+      document.getElementById('t-usa').textContent=`${pad(u.getHours())}:${pad(u.getMinutes())}:${pad(u.getSeconds())}`;
+      document.getElementById('t-bra').textContent=`${pad(b.getHours())}:${pad(b.getMinutes())}:${pad(b.getSeconds())}`;
+    }
+    updateClocks(); setInterval(updateClocks,1000);
+
+    // Default ticker items (used when no sheet configured)
+    const DEFAULT_ITEMS = [
+      {icon:'🏆',text:'Copa do Mundo FIFA 2026',highlight:true},
+      {icon:'🇺🇸',text:'USA · Canada · México'},
+      {icon:'⚽',text:'48 Seleções · 104 Jogos · 16 Cidades'},
+      {icon:'🇧🇷',text:'Brasil busca o hexacampeonato!',highlight:true},
+      {icon:'📅',text:'Abertura: 11 de Junho · Estádio Azteca · Cidade do México'},
+      {icon:'🌎',text:'Transmissão 24h ao vivo neste canal'},
+      {icon:'🏅',text:'Fase de Grupos: 11 Jun – 2 Jul'},
+      {icon:'⭐',text:'Oitavas: 3–8 Jul · Quartas: 11–12 Jul · Semis: 15–16 Jul · Final: 19 Jul'},
+    ];
+
+    async function buildTicker(){
+      const track=document.getElementById('tickerTrack');
+      let items=[...DEFAULT_ITEMS];
+
+      // Load from Google Sheets if configured
+      if(CONFIG.SHEETS.ticker){
+        try{
+          const rows=await CONTENT.getTicker();
+          if(rows.length){
+            items=[...rows.map(r=>({icon:r.icon||'⚽',text:r.texto||r.text||'',highlight:r.destaque==='sim'})),...DEFAULT_ITEMS];
+          }
+        }catch(_){}
+      }
+
+      // Load today's live/done fixtures as score items
+      try{
+        const today=await API.getTodayFixtures();
+        const active=today.filter(f=>API.isLive(f.statusShort)||API.isFinished(f.statusShort));
+        if(active.length){
+          const scoreItems=active.map(f=>({type:'score',fixture:f}));
+          items=[...scoreItems,...items];
+        }
+      }catch(_){}
+
+      if(!items.length)return;
+
+      function renderItem(item){
+        if(item.type==='score'){
+          const f=item.fixture;
+          const live=API.isLive(f.statusShort);
+          const elapsed=f.statusShort==='HT'?'HT':(f.elapsed?`${f.elapsed}'`:f.statusShort);
+          return`<div class="ticker-score-item">
+            <img class="sc-logo" src="${f.homeTeam.logo}" onerror="this.style.opacity=.3">
+            <span class="sc-name">${f.homeTeam.code}</span>
+            <span class="sc-score">${f.homeGoals??'-'} – ${f.awayGoals??'-'}</span>
+            <span class="sc-name">${f.awayTeam.code}</span>
+            <img class="sc-logo" src="${f.awayTeam.logo}" onerror="this.style.opacity=.3">
+            ${live?`<span class="sc-live">${elapsed}</span>`:''}
+          </div>`;
+        }
+        return`<div class="ticker-item">
+          <span class="ticker-icon">${item.icon}</span>
+          <span class="ticker-text${item.highlight?' highlight':''}">${item.text}</span>
+        </div>`;
+      }
+
+      const html=items.map(renderItem).join('');
+      track.innerHTML=html+html; // duplicate for seamless loop
+
+      // Adjust animation speed based on content length
+      const totalWidth=track.scrollWidth/2;
+      const speed=Math.max(30,totalWidth/6); // ~6px/s
+      track.style.animationDuration=`${speed}s`;
+    }
+
+    buildTicker();
+    setInterval(buildTicker, CONFIG.CONTENT_INTERVAL);
+  </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Overlay Placar – Copa 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    /* TRANSPARENT — OBS Browser Source */
+    html, body { background:transparent !important; overflow:hidden; width:420px; height:120px; }
+
+    .score-widget {
+      position:fixed; top:0; left:0;
+      background:linear-gradient(135deg,rgba(2,8,18,.94),rgba(6,15,30,.94));
+      border:1px solid rgba(255,215,0,.35);
+      border-radius:0 0 16px 0;
+      padding:10px 16px;
+      width:420px; min-height:80px;
+      backdrop-filter:blur(12px);
+      box-shadow:4px 4px 30px rgba(0,0,0,.6),inset 0 0 20px rgba(255,215,0,.03);
+      display:flex; flex-direction:column; gap:6px;
+    }
+
+    /* Header */
+    .sw-header {
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom:1px solid rgba(255,215,0,.2); padding-bottom:5px;
+    }
+    .sw-title {
+      font-family:'Orbitron',monospace; font-size:.5rem; font-weight:900;
+      letter-spacing:.25em; color:rgba(255,215,0,.8);
+    }
+    .sw-live {
+      display:flex; align-items:center; gap:5px;
+      font-family:'Orbitron',monospace; font-size:.5rem; font-weight:700;
+      letter-spacing:.15em; color:#C8102E;
+    }
+    .live-dot { width:6px; height:6px; border-radius:50%; background:#C8102E; animation:ldot 1.2s ease-in-out infinite; }
+    @keyframes ldot{0%,100%{box-shadow:0 0 3px #C8102E}50%{box-shadow:0 0 10px #C8102E}}
+
+    /* Match row */
+    .match-row {
+      display:grid; grid-template-columns:1fr 90px 1fr; align-items:center; gap:8px;
+    }
+    .mw-team { display:flex; align-items:center; gap:6px; }
+    .mw-team.away { flex-direction:row-reverse; }
+    .mw-logo { width:26px; height:26px; object-fit:contain; filter:drop-shadow(0 0 4px rgba(255,255,255,.2)); }
+    .mw-name { font-family:'Inter',sans-serif; font-size:.72rem; font-weight:700; color:#F0F4FF; line-height:1.2; }
+    .mw-code { font-family:'Orbitron',monospace; font-size:.48rem; font-weight:700; letter-spacing:.12em; color:rgba(255,255,255,.5); }
+
+    .mw-center { display:flex; flex-direction:column; align-items:center; gap:2px; }
+    .mw-score {
+      font-family:'Orbitron',monospace; font-size:1.6rem; font-weight:900;
+      color:#fff; letter-spacing:.06em; text-shadow:0 0 20px rgba(255,255,255,.25);
+      line-height:1;
+    }
+    .mw-elapsed {
+      font-family:'Orbitron',monospace; font-size:.52rem; font-weight:700;
+      color:#C8102E; letter-spacing:.1em;
+    }
+    .mw-time {
+      font-family:'Orbitron',monospace; font-size:.62rem; font-weight:700;
+      color:rgba(255,215,0,.8);
+    }
+
+    /* No live */
+    .no-live-widget {
+      display:flex; align-items:center; justify-content:center; gap:10px; min-height:60px;
+    }
+    .nw-text { font-family:'Inter',sans-serif; font-size:.72rem; font-weight:600; color:rgba(255,255,255,.6); }
+    .nw-next { font-family:'Orbitron',monospace; font-size:.65rem; font-weight:700; color:rgba(255,215,0,.8); }
+
+    /* Multi match tabs */
+    .match-tabs { display:flex; gap:4px; margin-bottom:2px; }
+    .match-tab {
+      font-family:'Orbitron',monospace; font-size:.45rem; font-weight:700; letter-spacing:.1em;
+      padding:2px 8px; border-radius:50px; cursor:pointer; border:1px solid rgba(255,215,0,.2);
+      color:rgba(255,215,0,.6); background:transparent; transition:all .2s;
+    }
+    .match-tab.active { background:rgba(255,215,0,.15); border-color:rgba(255,215,0,.4); color:#FFD700; }
+  </style>
+</head>
+<body>
+  <div class="score-widget" id="scoreWidget">
+    <div class="sw-header">
+      <div class="sw-title">⚽ COPA 2026</div>
+      <div class="sw-live"><div class="live-dot"></div>AO VIVO</div>
+    </div>
+    <div class="no-live-widget"><div class="nw-text">Aguardando início...</div></div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  <script>
+    let liveMatches=[], currentIdx=0;
+
+    function renderWidget(){
+      const widget=document.getElementById('scoreWidget');
+      const content=widget.querySelector('.widget-content')||widget;
+
+      // Remove old match content
+      while(widget.children.length>1)widget.removeChild(widget.lastChild);
+
+      if(!liveMatches.length){
+        // Show next upcoming
+        API.getUpcomingFixtures(1).then(upcoming=>{
+          const div=document.createElement('div');
+          div.className='no-live-widget';
+          if(upcoming.length){
+            const f=upcoming[0];
+            div.innerHTML=`<div>
+              <div class="nw-text">Próximo: ${f.homeTeam.code} vs ${f.awayTeam.code}</div>
+              <div class="nw-next">🇧🇷 ${API.toBrazilTime(f.date)} · ${API.toDisplayDate(f.date)}</div>
+            </div>`;
+          }else{
+            div.innerHTML='<div class="nw-text">Sem jogos ao vivo</div>';
+          }
+          widget.appendChild(div);
+        }).catch(()=>{
+          const div=document.createElement('div');
+          div.className='no-live-widget';
+          div.innerHTML='<div class="nw-text">Copa do Mundo FIFA 2026</div>';
+          widget.appendChild(div);
+        });
+        return;
+      }
+
+      // Tabs for multiple live matches
+      if(liveMatches.length>1){
+        const tabs=document.createElement('div');
+        tabs.className='match-tabs';
+        liveMatches.forEach((f,i)=>{
+          const tab=document.createElement('button');
+          tab.className='match-tab'+(i===currentIdx?' active':'');
+          tab.textContent=`${f.homeTeam.code}×${f.awayTeam.code}`;
+          tab.onclick=()=>{currentIdx=i;renderWidget();};
+          tabs.appendChild(tab);
+        });
+        widget.appendChild(tabs);
+      }
+
+      const f=liveMatches[currentIdx];
+      const elapsed=f.statusShort==='HT'?'INTERVALO':(f.elapsed?`${f.elapsed}'`:f.statusShort);
+
+      const row=document.createElement('div');
+      row.className='match-row';
+      row.innerHTML=`
+        <div class="mw-team">
+          <img class="mw-logo" src="${f.homeTeam.logo}" onerror="this.style.opacity=.3">
+          <div><div class="mw-name">${f.homeTeam.name}</div><div class="mw-code">${f.homeTeam.code}</div></div>
+        </div>
+        <div class="mw-center">
+          <div class="mw-score">${f.homeGoals??0} – ${f.awayGoals??0}</div>
+          <div class="mw-elapsed">${elapsed}</div>
+        </div>
+        <div class="mw-team away">
+          <img class="mw-logo" src="${f.awayTeam.logo}" onerror="this.style.opacity=.3">
+          <div><div class="mw-name">${f.awayTeam.name}</div><div class="mw-code">${f.awayTeam.code}</div></div>
+        </div>`;
+      widget.appendChild(row);
+    }
+
+    async function refresh(){
+      try{
+        const today=await API.getTodayFixtures();
+        const live=today.filter(f=>API.isLive(f.statusShort));
+        if(currentIdx>=live.length)currentIdx=0;
+        liveMatches=live;
+        renderWidget();
+      }catch(_){renderWidget();}
+    }
+
+    refresh();
+    setInterval(refresh, CONFIG.REFRESH_INTERVAL);
+    // Auto-rotate between live matches every 15s
+    setInterval(()=>{
+      if(liveMatches.length>1){currentIdx=(currentIdx+1)%liveMatches.length;renderWidget();}
+    },15000);
+  </script>
+</body>
+</html>

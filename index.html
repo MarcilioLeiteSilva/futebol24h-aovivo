@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FIFA World Cup 2026 – Countdown Oficial</title>
+  <meta name="description" content="Countdown oficial para a Copa do Mundo FIFA 2026 | USA · Canada · México" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== PARTICLES CANVAS ===== -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- ===== SCANLINE OVERLAY ===== -->
+  <div class="scanlines"></div>
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="top-bar">
+    <div class="top-bar__left">
+      <!-- FIFA Logo mockup -->
+      <div class="fifa-badge">
+        <span class="fifa-badge__top">FIFA</span>
+        <span class="fifa-badge__mid">⚽</span>
+        <span class="fifa-badge__bot">WORLD CUP</span>
+      </div>
+      <div class="host-flags">
+        <span class="flag" title="USA">🇺🇸</span>
+        <span class="flag" title="Canada">🇨🇦</span>
+        <span class="flag" title="México">🇲🇽</span>
+        <span class="host-label">2026</span>
+      </div>
+    </div>
+
+    <!-- ===== DUAL CLOCKS (TOP RIGHT) ===== -->
+    <div class="clocks-panel">
+      <div class="clock-card" id="clock-usa">
+        <span class="clock-card__flag">🇺🇸</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">NEW YORK / ET</span>
+          <span class="clock-card__time" id="time-usa">--:--:--</span>
+          <span class="clock-card__date" id="date-usa">-- --- ----</span>
+        </div>
+      </div>
+      <div class="clock-divider"></div>
+      <div class="clock-card" id="clock-bra">
+        <span class="clock-card__flag">🇧🇷</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">BRASÍLIA / BRT</span>
+          <span class="clock-card__time" id="time-bra">--:--:--</span>
+          <span class="clock-card__date" id="date-bra">-- --- ----</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main">
+
+    <!-- Hero title -->
+    <div class="hero-title">
+      <p class="hero-title__pre">A MAIOR FESTA DO FUTEBOL</p>
+      <h1 class="hero-title__main">COPA DO MUNDO</h1>
+      <h2 class="hero-title__year">
+        <span class="year-digit">2</span>
+        <span class="year-digit">0</span>
+        <span class="year-digit">2</span>
+        <span class="year-digit">6</span>
+      </h2>
+      <p class="hero-title__sub">USA &nbsp;·&nbsp; CANADA &nbsp;·&nbsp; MÉXICO</p>
+    </div>
+
+    <!-- Trophy image -->
+    <div class="trophy-container">
+      <img src="hero.png" alt="Troféu Copa do Mundo" class="trophy-img" />
+      <div class="trophy-glow"></div>
+    </div>
+
+    <!-- ===== COUNTDOWN ===== -->
+    <section class="countdown-section">
+      <p class="countdown-label">COMEÇA EM</p>
+      <div class="countdown-grid">
+        <div class="countdown-unit">
+          <div class="countdown-number" id="cd-days">--</div>
+          <div class="countdown-text">DIAS</div>
+        </div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-number" id="cd-hours">--</div>
+          <div class="countdown-text">HORAS</div>
+        </div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-number" id="cd-minutes">--</div>
+          <div class="countdown-text">MINUTOS</div>
+        </div>
+        <div class="countdown-colon">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-number" id="cd-seconds">--</div>
+          <div class="countdown-text">SEGUNDOS</div>
+        </div>
+      </div>
+      <div class="countdown-event">
+        <span class="countdown-event__icon">⚽</span>
+        <span class="countdown-event__text">Abertura · 11 de Junho de 2026 · México City</span>
+        <span class="countdown-event__icon">⚽</span>
+      </div>
+    </section>
+
+    <!-- ===== INFO STRIP ===== -->
+    <div class="info-strip">
+      <div class="info-strip__ticker" id="ticker">
+        <span>🏆 48 seleções · 104 jogos · 16 cidades-sede</span>
+        <span>⚽ Estreia do Brasil ainda a confirmar</span>
+        <span>🇺🇸 Estádio MetLife (Nova York) · capacidade 82.500</span>
+        <span>🌎 3 países, 1 sonho: A TAÇA!</span>
+        <span>📺 Transmissão ao vivo 24h neste canal</span>
+        <span>🇧🇷 Brasil busca o hexacampeonato!</span>
+      </div>
+    </div>
+
+    <!-- ===== GROUPS PLACEHOLDER ===== -->
+    <section class="groups-section">
+      <h3 class="groups-title">GRUPOS DA COPA</h3>
+      <div class="groups-grid" id="groups-grid">
+        <!-- generated by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <span>© 2026 Copa do Mundo FIFA · Transmissão 24h · Todos os direitos reservados</span>
+    <span class="footer-live"><span class="live-dot"></span> AO VIVO</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
