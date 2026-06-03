@@ -141,11 +141,31 @@ const API = (() => {
 
 // ── GOOGLE SHEETS CONTENT LOADER ──────────────────────────
 const CONTENT = (() => {
+  function splitCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        result.push(current.trim().replace(/^"|"$/g, '').replace(/""/g, '"'));
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    result.push(current.trim().replace(/^"|"$/g, '').replace(/""/g, '"'));
+    return result;
+  }
+
   function parseCSV(csv) {
     const lines = csv.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+    if (!lines.length) return [];
+    const headers = splitCSVLine(lines[0]);
     return lines.slice(1).map(line => {
-      const values = line.split(',').map(v => v.trim().replace(/"/g, ''));
+      const values = splitCSVLine(line);
       const obj = {};
       headers.forEach((h, i) => obj[h] = values[i] || '');
       return obj;

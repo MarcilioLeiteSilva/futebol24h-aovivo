@@ -178,9 +178,27 @@ function buildGroups() {
 }
 
 // ── TICKER DUPLICATE ──────────────────────────────────────
-// Duplicate ticker children so the animation loops seamlessly
-function setupTicker() {
+async function setupTicker() {
   const ticker = document.getElementById('ticker');
+  if (!ticker) return;
+
+  // Load from Sheets or local CSV if configured
+  if (CONFIG.SHEETS.ticker) {
+    try {
+      const rows = await CONTENT.getTicker();
+      if (rows && rows.length) {
+        ticker.innerHTML = rows.map(r => {
+          const icon = r.icon || '⚽';
+          const texto = r.texto || r.text || '';
+          return `<span>${icon} ${texto}</span>`;
+        }).join('');
+      }
+    } catch (e) {
+      console.warn("Could not load dynamic ticker:", e);
+    }
+  }
+
+  // Duplicate ticker children so the animation loops seamlessly
   const children = Array.from(ticker.children);
   children.forEach(child => {
     const clone = child.cloneNode(true);

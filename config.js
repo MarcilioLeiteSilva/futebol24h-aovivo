@@ -11,10 +11,11 @@ const CONFIG = {
 
   // Google Sheets CSV URLs (published to web)
   // User: File > Share > Publish to web > Choose sheet > CSV > Copy link
+  // Or use relative paths to local CSV files:
   SHEETS: {
-    noticias:      '', // paste your Google Sheet CSV URL here
-    curiosidades:  '', // paste your Google Sheet CSV URL here
-    ticker:        '', // paste your Google Sheet CSV URL here
+    noticias:      'noticias.csv', // paste your Google Sheet CSV URL or leave 'noticias.csv'
+    curiosidades:  'curiosidades.csv', // paste your Google Sheet CSV URL or leave 'curiosidades.csv'
+    ticker:        'ticker.csv', // paste your Google Sheet CSV URL or leave 'ticker.csv'
   },
 
   // OBS target resolution
