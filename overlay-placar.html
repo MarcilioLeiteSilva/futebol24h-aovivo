@@ -6,75 +6,79 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@600;700&display=swap" rel="stylesheet"/>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    /* TRANSPARENT — OBS Browser Source */
-    html, body { background:transparent !important; overflow:hidden; width:420px; height:120px; }
+    /* TRANSPARENT — OBS Browser Source (exactly half size of original) */
+    html, body { background:transparent !important; overflow:hidden; width:210px; height:60px; }
 
     .score-widget {
       position:fixed; top:0; left:0;
       background:linear-gradient(135deg,rgba(2,8,18,.94),rgba(6,15,30,.94));
       border:1px solid rgba(255,215,0,.35);
-      border-radius:0 0 16px 0;
-      padding:10px 16px;
-      width:420px; min-height:80px;
+      border-radius:0 0 8px 0;
+      padding:4px 8px;
+      width:210px; min-height:60px;
+      height:60px;
       backdrop-filter:blur(12px);
-      box-shadow:4px 4px 30px rgba(0,0,0,.6),inset 0 0 20px rgba(255,215,0,.03);
-      display:flex; flex-direction:column; gap:6px;
+      box-shadow:2px 2px 15px rgba(0,0,0,.6),inset 0 0 10px rgba(255,215,0,.03);
+      display:flex; flex-direction:column; gap:3px;
+      justify-content: center;
     }
 
     /* Header */
     .sw-header {
       display:flex; align-items:center; justify-content:space-between;
-      border-bottom:1px solid rgba(255,215,0,.2); padding-bottom:5px;
+      border-bottom:1px solid rgba(255,215,0,.2); padding-bottom:2px;
     }
     .sw-title {
-      font-family:'Orbitron',monospace; font-size:.5rem; font-weight:900;
-      letter-spacing:.25em; color:rgba(255,215,0,.8);
+      font-family:'Orbitron',monospace; font-size:.42rem; font-weight:900;
+      letter-spacing:.2em; color:rgba(255,215,0,.8);
     }
     .sw-live {
-      display:flex; align-items:center; gap:5px;
-      font-family:'Orbitron',monospace; font-size:.5rem; font-weight:700;
-      letter-spacing:.15em; color:#C8102E;
+      display:flex; align-items:center; gap:3px;
+      font-family:'Orbitron',monospace; font-size:.42rem; font-weight:700;
+      letter-spacing:.1em; color:#C8102E;
     }
-    .live-dot { width:6px; height:6px; border-radius:50%; background:#C8102E; animation:ldot 1.2s ease-in-out infinite; }
-    @keyframes ldot{0%,100%{box-shadow:0 0 3px #C8102E}50%{box-shadow:0 0 10px #C8102E}}
+    .live-dot { width:4px; height:4px; border-radius:50%; background:#C8102E; animation:ldot 1.2s ease-in-out infinite; }
+    @keyframes ldot{0%,100%{box-shadow:0 0 2px #C8102E}50%{box-shadow:0 0 6px #C8102E}}
 
     /* Match row */
     .match-row {
-      display:grid; grid-template-columns:1fr 90px 1fr; align-items:center; gap:8px;
+      display:grid; grid-template-columns:1fr 45px 1fr; align-items:center; gap:4px;
+      flex: 1;
     }
-    .mw-team { display:flex; align-items:center; gap:6px; }
+    .mw-team { display:flex; align-items:center; gap:4px; }
     .mw-team.away { flex-direction:row-reverse; }
-    .mw-logo { width:26px; height:26px; object-fit:contain; filter:drop-shadow(0 0 4px rgba(255,255,255,.2)); }
-    .mw-name { font-family:'Inter',sans-serif; font-size:.72rem; font-weight:700; color:#F0F4FF; line-height:1.2; }
-    .mw-code { font-family:'Orbitron',monospace; font-size:.48rem; font-weight:700; letter-spacing:.12em; color:rgba(255,255,255,.5); }
+    .mw-logo { width:16px; height:16px; object-fit:contain; filter:drop-shadow(0 0 2px rgba(255,255,255,.2)); }
+    .mw-name { display: none; } /* Hide full name for mini view */
+    .mw-code { font-family:'Orbitron',monospace; font-size:.55rem; font-weight:700; letter-spacing:.05em; color:rgba(255,255,255,.8); }
 
-    .mw-center { display:flex; flex-direction:column; align-items:center; gap:2px; }
+    .mw-center { display:flex; flex-direction:column; align-items:center; gap:0px; }
     .mw-score {
-      font-family:'Orbitron',monospace; font-size:1.6rem; font-weight:900;
-      color:#fff; letter-spacing:.06em; text-shadow:0 0 20px rgba(255,255,255,.25);
+      font-family:'Orbitron',monospace; font-size:.9rem; font-weight:900;
+      color:#fff; letter-spacing:.04em; text-shadow:0 0 10px rgba(255,255,255,.25);
       line-height:1;
     }
     .mw-elapsed {
-      font-family:'Orbitron',monospace; font-size:.52rem; font-weight:700;
-      color:#C8102E; letter-spacing:.1em;
+      font-family:'Orbitron',monospace; font-size:.42rem; font-weight:700;
+      color:#C8102E; letter-spacing:.05em;
     }
     .mw-time {
-      font-family:'Orbitron',monospace; font-size:.62rem; font-weight:700;
+      font-family:'Orbitron',monospace; font-size:.45rem; font-weight:700;
       color:rgba(255,215,0,.8);
     }
 
     /* No live */
     .no-live-widget {
-      display:flex; align-items:center; justify-content:center; gap:10px; min-height:60px;
+      display:flex; align-items:center; justify-content:center; gap:5px; min-height:40px;
+      text-align: center;
     }
-    .nw-text { font-family:'Inter',sans-serif; font-size:.72rem; font-weight:600; color:rgba(255,255,255,.6); }
-    .nw-next { font-family:'Orbitron',monospace; font-size:.65rem; font-weight:700; color:rgba(255,215,0,.8); }
+    .nw-text { font-family:'Inter',sans-serif; font-size:.52rem; font-weight:600; color:rgba(255,255,255,.6); line-height: 1.2; }
+    .nw-next { font-family:'Orbitron',monospace; font-size:.48rem; font-weight:700; color:rgba(255,215,0,.8); margin-top: 1px; }
 
     /* Multi match tabs */
-    .match-tabs { display:flex; gap:4px; margin-bottom:2px; }
+    .match-tabs { display:flex; gap:2px; margin-bottom:1px; }
     .match-tab {
-      font-family:'Orbitron',monospace; font-size:.45rem; font-weight:700; letter-spacing:.1em;
-      padding:2px 8px; border-radius:50px; cursor:pointer; border:1px solid rgba(255,215,0,.2);
+      font-family:'Orbitron',monospace; font-size:.38rem; font-weight:700; letter-spacing:.05em;
+      padding:1px 5px; border-radius:50px; cursor:pointer; border:1px solid rgba(255,215,0,.2);
       color:rgba(255,215,0,.6); background:transparent; transition:all .2s;
     }
     .match-tab.active { background:rgba(255,215,0,.15); border-color:rgba(255,215,0,.4); color:#FFD700; }
