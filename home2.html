@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FIFA World Cup 2026 – Painel Oficial</title>
+  <meta name="description" content="Painel oficial e countdown para a Copa do Mundo FIFA 2026 | USA · Canada · México" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Split layout container */
+    .main-split {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
+      width: 100%;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 30px 20px 80px;
+      min-height: calc(100vh - 150px);
+    }
+
+    .panel-left {
+      flex: 1.1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .panel-right {
+      flex: 0.9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      background: rgba(6, 15, 30, 0.6);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 24px;
+      padding: 35px 25px;
+      backdrop-filter: blur(15px);
+      box-shadow: 
+        0 20px 50px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 0 30px rgba(255, 215, 0, 0.03);
+    }
+
+    /* Left panel specific styling */
+    .panel-left__hero {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      width: 100%;
+    }
+
+    .panel-left .trophy-container {
+      width: 200px;
+      height: 200px;
+      flex-shrink: 0;
+    }
+
+    .panel-left .hero-title {
+      text-align: left;
+      align-items: flex-start;
+      gap: 2px;
+      flex-grow: 1;
+    }
+
+    .panel-left .hero-title__main {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      line-height: 0.95;
+    }
+
+    .panel-left .year-digit {
+      font-size: clamp(2rem, 4vw, 3rem);
+    }
+
+    /* Info Grid Card */
+    .info-card {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      width: 100%;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px 20px;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .info-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(255,215,0,0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+
+    .info-item:hover::before {
+      opacity: 1;
+    }
+
+    .info-item:hover {
+      transform: translateY(-3px) scale(1.02);
+      border-color: rgba(255, 215, 0, 0.35);
+      box-shadow: 0 10px 25px rgba(255, 215, 0, 0.08);
+    }
+
+    .info-icon-wrapper {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 215, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      color: var(--gold);
+      flex-shrink: 0;
+      z-index: 2;
+    }
+
+    .info-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      z-index: 2;
+    }
+
+    .info-label {
+      font-family: var(--font-body);
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .info-value {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* Right Panel elements */
+    .right-panel .countdown-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      font-weight: 900;
+    }
+
+    .countdown-grid-mini {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .countdown-unit-mini {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      min-width: 75px;
+    }
+
+    .countdown-number-mini {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1;
+      width: 100%;
+      text-align: center;
+      background: linear-gradient(180deg, #fff 0%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      padding: 14px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      background-color: rgba(2, 8, 18, 0.6);
+      backdrop-filter: blur(8px);
+      box-shadow:
+        0 4px 15px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+      transition: transform 0.15s ease;
+    }
+
+    .countdown-number-mini.flip {
+      transform: scaleY(0.8);
+      filter: brightness(1.2);
+    }
+
+    .countdown-text-mini {
+      font-family: var(--font-body);
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+
+    .countdown-colon-mini {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 900;
+      color: var(--gold);
+      opacity: 0.6;
+      animation: blink 1s step-end infinite;
+      padding-bottom: 18px;
+    }
+
+    .event-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text);
+      background: rgba(255, 215, 0, 0.06);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 50px;
+      padding: 8px 18px;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* Upcoming games */
+    .upcoming-box {
+      width: 100%;
+      margin-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 20px;
+    }
+
+    .upcoming-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .upcoming-title {
+      font-family: var(--font-head);
+      font-size: 0.7rem;
+      font-weight: 900;
+      color: var(--gold);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-body);
+      font-size: 0.58rem;
+      font-weight: 700;
+      color: var(--subtext);
+      letter-spacing: 0.05em;
+    }
+
+    .upcoming-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .mini-match-card {
+      display: grid;
+      grid-template-columns: 1fr 65px 1fr;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 10px 14px;
+      gap: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .mini-match-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 215, 0, 0.25);
+    }
+
+    .mini-match-team {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .mini-match-team.away {
+      justify-content: flex-end;
+      text-align: right;
+    }
+
+    .mini-match-flag {
+      font-size: 1.15rem;
+      filter: drop-shadow(0 0 3px rgba(255,255,255,0.1));
+    }
+
+    .mini-match-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mini-match-time-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mini-match-time {
+      font-family: var(--font-head);
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--gold);
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 6px;
+      padding: 3px 6px;
+      min-width: 54px;
+      text-align: center;
+    }
+
+    .mini-match-date {
+      font-size: 0.5rem;
+      color: var(--subtext);
+      margin-top: 3px;
+      font-weight: 600;
+    }
+
+    /* Responsiveness */
+    @media (max-width: 1024px) {
+      .main-split {
+        flex-direction: column;
+        gap: 32px;
+        padding-top: 20px;
+        padding-bottom: 40px;
+      }
+
+      .panel-left {
+        align-items: center;
+        text-align: center;
+        width: 100%;
+      }
+
+      .panel-left__hero {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 16px;
+      }
+
+      .panel-left .hero-title {
+        align-items: center;
+        text-align: center;
+      }
+
+      .panel-right {
+        width: 100%;
+        max-width: 600px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .info-card {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .panel-left .trophy-container {
+        width: 160px;
+        height: 160px;
+      }
+      .countdown-grid-mini {
+        gap: 6px;
+      }
+      .countdown-unit-mini {
+        min-width: 65px;
+      }
+      .countdown-number-mini {
+        font-size: 2.2rem;
+        padding: 10px 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== PARTICLES CANVAS ===== -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- ===== SCANLINE OVERLAY ===== -->
+  <div class="scanlines"></div>
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="top-bar">
+    <div class="top-bar__left">
+      <div class="fifa-badge">
+        <span class="fifa-badge__top">FIFA</span>
+        <span class="fifa-badge__mid">⚽</span>
+        <span class="fifa-badge__bot">WORLD CUP</span>
+      </div>
+      <div class="host-flags">
+        <span class="flag" title="USA">🇺🇸</span>
+        <span class="flag" title="Canada">🇨🇦</span>
+        <span class="flag" title="México">🇲🇽</span>
+        <span class="host-label">2026</span>
+      </div>
+    </div>
+
+    <!-- DUAL CLOCKS -->
+    <div class="clocks-panel">
+      <div class="clock-card" id="clock-usa">
+        <span class="clock-card__flag">🇺🇸</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">NEW YORK / ET</span>
+          <span class="clock-card__time" id="time-usa">--:--:--</span>
+          <span class="clock-card__date" id="date-usa">-- --- ----</span>
+        </div>
+      </div>
+      <div class="clock-divider"></div>
+      <div class="clock-card" id="clock-bra">
+        <span class="clock-card__flag">🇧🇷</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">BRASÍLIA / BRT</span>
+          <span class="clock-card__time" id="time-bra">--:--:--</span>
+          <span class="clock-card__date" id="date-bra">-- --- ----</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-split">
+
+    <!-- LEFT PANEL: TROPHY & TOURNAMENT INFO -->
+    <section class="panel-left">
+      <div class="panel-left__hero">
+        <div class="trophy-container">
+          <img src="hero.png" alt="Troféu Copa do Mundo" class="trophy-img" />
+          <div class="trophy-glow"></div>
+        </div>
+        
+        <div class="hero-title">
+          <p class="hero-title__pre">A MAIOR FESTA DO FUTEBOL</p>
+          <h1 class="hero-title__main">COPA DO MUNDO</h1>
+          <h2 class="hero-title__year">
+            <span class="year-digit">2</span>
+            <span class="year-digit">0</span>
+            <span class="year-digit">2</span>
+            <span class="year-digit">6</span>
+          </h2>
+          <p class="hero-title__sub">USA &nbsp;·&nbsp; CANADA &nbsp;·&nbsp; MÉXICO</p>
+        </div>
+      </div>
+
+      <!-- Information Cards Grid -->
+      <div class="info-card">
+        <div class="info-item">
+          <div class="info-icon-wrapper">📅</div>
+          <div class="info-text">
+            <span class="info-label">Abertura Oficial</span>
+            <span class="info-value">11 de Junho de 2026</span>
+          </div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-icon-wrapper">🏟️</div>
+          <div class="info-text">
+            <span class="info-label">Cidades-Sede</span>
+            <span class="info-value">16 Cidades nos 3 Países</span>
+          </div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-icon-wrapper">⚽</div>
+          <div class="info-text">
+            <span class="info-label">Novo Formato</span>
+            <span class="info-value">48 Seleções · 104 Jogos</span>
+          </div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-icon-wrapper">🏆</div>
+          <div class="info-text">
+            <span class="info-label">Grande Final</span>
+            <span class="info-value">Estádio MetLife (NY)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL: COUNTDOWN & FIXTURES -->
+    <section class="panel-right">
+      <p class="countdown-label">CONTAGEM REGRESSIVA</p>
+      
+      <!-- Countdown timer -->
+      <div class="countdown-grid-mini">
+        <div class="countdown-unit-mini">
+          <div class="countdown-number-mini" id="cd-days">--</div>
+          <div class="countdown-text-mini">DIAS</div>
+        </div>
+        <div class="countdown-colon-mini">:</div>
+        <div class="countdown-unit-mini">
+          <div class="countdown-number-mini" id="cd-hours">--</div>
+          <div class="countdown-text-mini">HORAS</div>
+        </div>
+        <div class="countdown-colon-mini">:</div>
+        <div class="countdown-unit-mini">
+          <div class="countdown-number-mini" id="cd-minutes">--</div>
+          <div class="countdown-text-mini">MINS</div>
+        </div>
+        <div class="countdown-colon-mini">:</div>
+        <div class="countdown-unit-mini">
+          <div class="countdown-number-mini" id="cd-seconds">--</div>
+          <div class="countdown-text-mini">SEGS</div>
+        </div>
+      </div>
+
+      <div class="event-badge">
+        <span>⚽ Abertura no Azteca (CDMX) · 11 Junho 2026</span>
+      </div>
+
+      <!-- Upcoming fixtures box -->
+      <div class="upcoming-box">
+        <div class="upcoming-header">
+          <span class="upcoming-title">📅 Próximos Confrontos</span>
+          <span class="live-indicator"><span class="live-dot"></span> AO VIVO</span>
+        </div>
+        <div class="upcoming-list" id="upcoming-list">
+          <div style="text-align: center; color: var(--subtext); font-size: 0.75rem; padding: 10px;">
+            Carregando agenda de jogos...
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== INFO STRIP (BOTTOM TICKER) ===== -->
+  <div class="info-strip">
+    <div class="info-strip__ticker" id="ticker">
+      <span>🏆 48 seleções · 104 jogos · 16 cidades-sede</span>
+      <span>⚽ Estreia do Brasil ainda a confirmar</span>
+      <span>🇺🇸 Estádio MetLife (Nova York) · capacidade 82.500</span>
+      <span>🌎 3 países, 1 sonho: A TAÇA!</span>
+      <span>📺 Transmissão ao vivo 24h neste canal</span>
+      <span>🇧🇷 Brasil busca o hexacampeonato!</span>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <span>© 2026 Copa do Mundo FIFA · Transmissão 24h · Todos os direitos reservados</span>
+    <span class="footer-live"><span class="live-dot"></span> AO VIVO</span>
+  </footer>
+
+  <!-- Include libraries and configuration -->
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  
+  <script>
+    // ── COUNTDOWN TARGET DATE ──────────────────────────────────
+    // Opening match: Mexico vs TBD · June 11, 2026
+    const TARGET_DATE = new Date('2026-06-12T01:00:00Z');
+
+    // ── FALLBACK MATCHES (If API is offline) ────────────────────
+    const FALLBACK_MATCHES = [
+      {
+        homeTeam: { flag: '🇲🇽', name: 'México', code: 'MEX' },
+        awayTeam: { flag: '🇺🇸', name: 'Estados Unidos', code: 'USA' },
+        date: '2026-06-11T19:00:00Z',
+        venueCity: 'Cidade do México'
+      },
+      {
+        homeTeam: { flag: '🇨🇦', name: 'Canadá', code: 'CAN' },
+        awayTeam: { flag: '🇧🇷', name: 'Brasil', code: 'BRA' },
+        date: '2026-06-12T17:00:00Z',
+        venueCity: 'Toronto'
+      },
+      {
+        homeTeam: { flag: '🇺🇸', name: 'Estados Unidos', code: 'USA' },
+        awayTeam: { flag: '🇦🇷', name: 'Argentina', code: 'ARG' },
+        date: '2026-06-12T20:00:00Z',
+        venueCity: 'Los Angeles'
+      }
+    ];
+
+    // ── PARTICLE SYSTEM (Premium Background Animation) ────────
+    const canvas  = document.getElementById('particleCanvas');
+    const ctx     = canvas.getContext('2d');
+    let particles = [];
+    let W, H;
+
+    function resizeCanvas() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function createParticle() {
+      const types = ['⚽', '★', '•', '◆'];
+      return {
+        x: Math.random() * W,
+        y: H + 20,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: -(Math.random() * 0.6 + 0.3),
+        alpha: Math.random() * 0.6 + 0.1,
+        size: Math.random() * 14 + 6,
+        type: types[Math.floor(Math.random() * types.length)],
+        rotate: Math.random() * Math.PI * 2,
+        rotateSpeed: (Math.random() - 0.5) * 0.02,
+      };
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, W, H);
+
+      if (particles.length < 50) {
+        particles.push(createParticle());
+      }
+
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotate += p.rotateSpeed;
+        p.alpha -= 0.0004;
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotate);
+        ctx.font = `${p.size}px serif`;
+        ctx.fillStyle = p.type === '⚽' ? '#FFD700' : 'rgba(255,215,0,0.7)';
+        ctx.fillText(p.type, 0, 0);
+        ctx.restore();
+
+        if (p.y < -20 || p.alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      });
+
+      requestAnimationFrame(animateParticles);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    animateParticles();
+
+    // ── CLOCK HELPERS ──────────────────────────────────────────
+    const DAYS_SHORT = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const MONTHS_SHORT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function formatTime(date) {
+      return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    }
+
+    function formatDate(date) {
+      return `${DAYS_SHORT[date.getDay()]}, ${pad(date.getDate())} ${MONTHS_SHORT[date.getMonth()]} ${date.getFullYear()}`;
+    }
+
+    function getTimeInZone(offsetHours) {
+      const now     = new Date();
+      const utcMs   = now.getTime() + now.getTimezoneOffset() * 60_000;
+      return new Date(utcMs + offsetHours * 3_600_000);
+    }
+
+    // Update Top Clocks
+    function updateClocks() {
+      const usa = getTimeInZone(-4);
+      document.getElementById('time-usa').textContent = formatTime(usa);
+      document.getElementById('date-usa').textContent = formatDate(usa);
+
+      const bra = getTimeInZone(-3);
+      document.getElementById('time-bra').textContent = formatTime(bra);
+      document.getElementById('date-bra').textContent = formatDate(bra);
+    }
+
+    // ── COUNTDOWN ──────────────────────────────────────────────
+    const prevValues = { days: null, hours: null, minutes: null, seconds: null };
+
+    function animateFlip(el) {
+      el.classList.add('flip');
+      setTimeout(() => el.classList.remove('flip'), 200);
+    }
+
+    function updateCountdown() {
+      const now  = new Date();
+      const diff = TARGET_DATE - now;
+
+      if (diff <= 0) {
+        document.getElementById('cd-days').textContent    = '00';
+        document.getElementById('cd-hours').textContent   = '00';
+        document.getElementById('cd-minutes').textContent = '00';
+        document.getElementById('cd-seconds').textContent = '00';
+        document.querySelector('.countdown-label').textContent = '🏆 A COPA JÁ COMEÇOU!';
+        return;
+      }
+
+      const days    = Math.floor(diff / 86_400_000);
+      const hours   = Math.floor((diff % 86_400_000) / 3_600_000);
+      const minutes = Math.floor((diff % 3_600_000)  / 60_000);
+      const seconds = Math.floor((diff % 60_000)      / 1_000);
+
+      const ids = { days, hours, minutes: minutes, seconds };
+
+      Object.entries(ids).forEach(([key, val]) => {
+        const el = document.getElementById(`cd-${key}`);
+        if (el && prevValues[key] !== val) {
+          animateFlip(el);
+          el.textContent = pad(val);
+          prevValues[key] = val;
+        }
+      });
+    }
+
+    // ── DYNAMIC MATCHES LIST ──────────────────────────────────
+    async function loadMatches() {
+      const listEl = document.getElementById('upcoming-list');
+      try {
+        let fixtures = await API.getUpcomingFixtures(3);
+        if (!fixtures || fixtures.length === 0) {
+          fixtures = FALLBACK_MATCHES;
+        }
+        
+        listEl.innerHTML = '';
+        fixtures.slice(0, 3).forEach(match => {
+          const homeName = match.homeTeam.name;
+          const homeFlag = match.homeTeam.flag || '⚽';
+          const awayName = match.awayTeam.name;
+          const awayFlag = match.awayTeam.flag || '⚽';
+          const dateObj = new Date(match.date);
+          
+          const timeStr = dateObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          const dateStr = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+          
+          const cardHtml = `
+            <div class="mini-match-card">
+              <div class="mini-match-team">
+                <span class="mini-match-flag">${homeFlag}</span>
+                <span class="mini-match-name">${homeName}</span>
+              </div>
+              <div class="mini-match-time-box">
+                <div class="mini-match-time">${timeStr}</div>
+                <div class="mini-match-date">${dateStr}</div>
+              </div>
+              <div class="mini-match-team away">
+                <span class="mini-match-name">${awayName}</span>
+                <span class="mini-match-flag">${awayFlag}</span>
+              </div>
+            </div>
+          `;
+          listEl.innerHTML += cardHtml;
+        });
+      } catch (e) {
+        console.warn("Failed to load live fixtures, loading fallback...", e);
+        listEl.innerHTML = '';
+        FALLBACK_MATCHES.forEach(match => {
+          const dateObj = new Date(match.date);
+          const timeStr = dateObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          const dateStr = dateObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+          const cardHtml = `
+            <div class="mini-match-card">
+              <div class="mini-match-team">
+                <span class="mini-match-flag">${match.homeTeam.flag}</span>
+                <span class="mini-match-name">${match.homeTeam.name}</span>
+              </div>
+              <div class="mini-match-time-box">
+                <div class="mini-match-time">${timeStr}</div>
+                <div class="mini-match-date">${dateStr}</div>
+              </div>
+              <div class="mini-match-team away">
+                <span class="mini-match-name">${match.awayTeam.name}</span>
+                <span class="mini-match-flag">${match.awayTeam.flag}</span>
+              </div>
+            </div>
+          `;
+          listEl.innerHTML += cardHtml;
+        });
+      }
+    }
+
+    // ── TICKER SETUP ───────────────────────────────────────────
+    async function setupTicker() {
+      const ticker = document.getElementById('ticker');
+      if (!ticker) return;
+
+      if (typeof CONFIG !== 'undefined' && CONFIG.SHEETS.ticker) {
+        try {
+          const rows = await CONTENT.getTicker();
+          if (rows && rows.length) {
+            ticker.innerHTML = rows.map(r => {
+              const icon = r.icon || '⚽';
+              const texto = r.texto || r.text || '';
+              return `<span>${icon} ${texto}</span>`;
+            }).join('');
+          }
+        } catch (e) {
+          console.warn("Could not load dynamic ticker:", e);
+        }
+      }
+
+      // Duplicate ticker children so the animation loops seamlessly
+      const children = Array.from(ticker.children);
+      children.forEach(child => {
+        const clone = child.cloneNode(true);
+        ticker.appendChild(clone);
+      });
+    }
+
+    // ── INIT & RUN ─────────────────────────────────────────────
+    setupTicker();
+    updateClocks();
+    updateCountdown();
+    loadMatches();
+
+    setInterval(() => {
+      updateClocks();
+      updateCountdown();
+    }, 1000);
+
+    // Refresh matches list every 30 seconds
+    setInterval(loadMatches, CONFIG.REFRESH_INTERVAL || 30000);
+  </script>
+</body>
+</html>
