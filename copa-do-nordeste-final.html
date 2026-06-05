@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Copa do Nordeste – Grande Final</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .page-title { text-align: center; padding: 48px 24px 24px; }
+    .page-title h1 { font-family: var(--font-disp); font-size: clamp(2.5rem, 6vw, 4rem); letter-spacing: 0.1em; color: var(--gold); margin: 0 0 12px; text-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+    .page-title p { font-size: 0.9rem; letter-spacing: 0.3em; color: var(--subtext); }
+    .placeholder-content {
+      max-width: 800px;
+      margin: 40px auto;
+      text-align: center;
+      padding: 40px;
+      background: var(--glass);
+      border: 1px solid var(--glass-bd);
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particleCanvas"></canvas>
+  <div class="scanlines"></div>
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="top-bar">
+    <div class="top-bar__left">
+      <a href="copa-do-nordeste.html" class="back-btn">⬅ VOLTAR</a>
+      <div class="fifa-badge" style="border-color: #009b3a;">
+        <span class="fifa-badge__top" style="color: #ffdf00;">C. DO NORDESTE</span>
+        <span class="fifa-badge__mid">🏆</span>
+        <span class="fifa-badge__bot" style="color: #fff;">FINAL</span>
+      </div>
+    </div>
+    <div class="clocks-panel">
+      <div class="clock-card"><span class="clock-card__flag">🌎</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">SEU HORÁRIO</span>
+          <span class="clock-card__time" id="time-usa">--:--:--</span>
+          <span class="clock-card__date" id="date-usa">-- --- ----</span>
+        </div>
+      </div>
+      <div class="clock-divider"></div>
+      <div class="clock-card"><span class="clock-card__flag">🇧🇷</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">BRASÍLIA / BRT</span>
+          <span class="clock-card__time" id="time-bra">--:--:--</span>
+          <span class="clock-card__date" id="date-bra">-- --- ----</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-wrap">
+    <div class="page-title">
+      <h1>🏆 COPA DO NORDESTE – FINAL</h1>
+      <p>DETALHES E TRANSMISSÃO EM BREVE</p>
+    </div>
+
+    <div class="placeholder-content">
+      <p style="font-size: 1.2rem; color: #fff; margin-bottom: 8px;">Aguardando detalhes da transmissão...</p>
+      <span style="font-size: 0.85rem; color: var(--subtext);">Esta página será preenchida com as estatísticas, escalações e o player de transmissão da grande final.</span>
+    </div>
+  </div>
+
+  <footer class="footer" style="position: fixed; bottom: 0; left: 0; right: 0;">
+    <span>© 2026 Copa do Nordeste · Grande Final</span>
+    <span class="footer-live"><span class="live-dot"></span> TRANSMISSÃO EM BREVE</span>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  <script>
+    // ── clocks ──────────────────────────────────────────────
+    const DAYS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    const MONTHS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    function pad(n){return String(n).padStart(2,'0');}
+    function zoneDate(off){const n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*6e4+off*36e5);}
+    function updateClocks(){
+      const local=new Date(),b=zoneDate(-3);
+      const lTime = document.getElementById('time-usa');
+      const lDate = document.getElementById('date-usa');
+      if (lTime) lTime.textContent=`${pad(local.getHours())}:${pad(local.getMinutes())}:${pad(local.getSeconds())}`;
+      if (lDate) lDate.textContent=`${DAYS[local.getDay()]}, ${pad(local.getDate())} ${MONTHS[local.getMonth()]} ${local.getFullYear()}`;
+      document.getElementById('time-bra').textContent=`${pad(b.getHours())}:${pad(b.getMinutes())}:${pad(b.getSeconds())}`;
+      document.getElementById('date-bra').textContent=`${DAYS[b.getDay()]}, ${pad(b.getDate())} ${MONTHS[b.getMonth()]} ${b.getFullYear()}`;
+    }
+    updateClocks(); setInterval(updateClocks, 1000);
+
+    // particles
+    const cv=document.getElementById('particleCanvas'),ctx2=cv.getContext('2d');
+    let W2,H2,pts=[];
+    function resize(){W2=cv.width=window.innerWidth;H2=cv.height=window.innerHeight;}
+    function mkPt(){return{x:Math.random()*W2,y:H2+10,vx:(Math.random()-.5)*.4,vy:-(Math.random()*.5+.2),a:Math.random()*.35+.08,s:Math.random()*9+5,r:0,rs:(Math.random()-.5)*.02};}
+    function animPts(){
+      ctx2.clearRect(0,0,W2,H2);
+      if(pts.length<20)pts.push(mkPt());
+      pts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.r+=p.rs;p.a-=.0004;
+        ctx2.save();ctx2.globalAlpha=Math.max(0,p.a);ctx2.translate(p.x,p.y);ctx2.rotate(p.r);
+        ctx2.font=`${p.s}px serif`;ctx2.fillStyle='rgba(255,215,0,.5)';ctx2.fillText('⚽',0,0);
+        ctx2.restore();if(p.y<-20||p.a<=0)pts.splice(i,1);
+      });requestAnimationFrame(animPts);
+    }
+    window.addEventListener('resize',resize);resize();animPts();
+  </script>
+</body>
+</html>
