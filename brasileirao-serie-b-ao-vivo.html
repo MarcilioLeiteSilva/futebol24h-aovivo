@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brasileirão Série B – Transmissão Ao Vivo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* Estilos isolados para a página de transmissão da Série B */
+    body.serie-b-ao-vivo-body {
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Center Score Banner in Header */
+    .top-bar__center-score {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      z-index: 105;
+    }
+    .score-banner {
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      padding: 6px 16px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+      backdrop-filter: blur(8px);
+    }
+    .score-team {
+      font-family: var(--font-head);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #fff;
+    }
+    .score-digits {
+      font-family: var(--font-head);
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--gold);
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+    .score-separator {
+      color: #fff;
+      font-weight: bold;
+      opacity: 0.6;
+    }
+    .live-indicator-tag {
+      font-family: var(--font-head);
+      font-size: 0.55rem;
+      font-weight: 700;
+      color: var(--red);
+      border: 1px solid var(--red);
+      padding: 2px 6px;
+      border-radius: 50px;
+      margin-left: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      animation: livePulse 1.5s ease-in-out infinite;
+    }
+    .indicator-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+    
+    /* Main Layout */
+    .page-content-split {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 24px;
+      padding: 12px 32px 8px;
+      overflow: hidden;
+      align-items: stretch;
+    }
+    
+    /* Left: Live Player */
+    .player-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+    .player-container {
+      background: #020812;
+      border: 2px solid rgba(0, 155, 58, 0.3);
+      border-radius: 24px;
+      aspect-ratio: 16/9;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 155, 58, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .player-container:hover {
+      border-color: rgba(0, 155, 58, 0.6);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 35px rgba(0, 155, 58, 0.2);
+    }
+    
+    /* Video Poster Area */
+    .video-poster {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(6, 15, 30, 0.3) 0%, #020812 90%), url('hero.png') no-repeat center;
+      background-size: cover;
+      opacity: 0.8;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .play-btn-glow {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(0, 155, 58, 0.85);
+      border: 2px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 30px rgba(0, 155, 58, 0.6);
+      transition: all 0.3s ease;
+      z-index: 3;
+      margin-bottom: 16px;
+    }
+    .play-btn-glow:hover {
+      transform: scale(1.1);
+      background: #009b3a;
+      box-shadow: 0 0 40px rgba(0, 155, 58, 0.9);
+    }
+    .play-icon-svg {
+      width: 32px;
+      height: 32px;
+      fill: #fff;
+      margin-left: 6px;
+    }
+    .live-stream-overlay-text {
+      color: #fff;
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.1em;
+      z-index: 2;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+      text-align: center;
+    }
+    .live-stream-overlay-sub {
+      color: var(--gold);
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      margin-top: 8px;
+      z-index: 2;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      text-transform: uppercase;
+    }
+    
+    /* Player stream bars */
+    .stream-status-bar {
+      height: 36px;
+      background: rgba(2, 8, 18, 0.9);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-family: var(--font-head);
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      color: var(--subtext);
+    }
+    .stream-info-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .stream-indicator-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--red);
+      font-weight: bold;
+    }
+    
+    /* Right Column: Carousel Card */
+    .carousel-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+    
+    .carousel-card {
+      background: linear-gradient(135deg, rgba(2, 8, 18, 0.85), rgba(6, 15, 30, 0.85));
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 20px;
+      padding: 16px 20px;
+      height: 100%;
+      max-height: 480px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* Carousel Navigation */
+    .carousel-nav-arrows {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      display: flex;
+      gap: 6px;
+      z-index: 5;
+    }
+    .arrow-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      color: #fff;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.7rem;
+      transition: all 0.2s;
+    }
+    .arrow-btn:hover {
+      background: rgba(255, 215, 0, 0.15);
+      border-color: var(--gold);
+    }
+    
+    /* Tab Headers */
+    .tabs-header {
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--subtext);
+      font-family: var(--font-head);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      padding: 4px 8px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .tab-btn.active {
+      color: var(--gold);
+    }
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -9px;
+      left: 0; right: 0;
+      height: 2px;
+      background: var(--gold);
+      box-shadow: 0 0 10px var(--gold);
+    }
+    
+    /* Carousel Container */
+    .carousel-wrapper {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    .carousel-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.1) transparent;
+      padding-right: 4px;
+    }
+    .carousel-slide.active {
+      opacity: 1;
+      visibility: visible;
+      z-index: 2;
+    }
+    
+    /* Slide 1: Lineup details */
+    .lineup-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .lineup-title {
+      font-family: var(--font-head);
+      font-size: 0.65rem;
+      color: var(--gold);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .lineup-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .lineup-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text);
+    }
+    .lineup-num {
+      color: var(--subtext);
+      font-family: var(--font-head);
+      font-weight: bold;
+      width: 18px;
+    }
+    .lineup-name {
+      flex: 1;
+      text-align: left;
+    }
+    .coach-row {
+      margin-top: 8px;
+      font-size: 0.7rem;
+      color: var(--subtext);
+      border-top: 1px dashed rgba(255,255,255,0.05);
+      padding-top: 4px;
+    }
+    
+    /* Slide 2: Stats details */
+    .stats-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 4px 0;
+    }
+    .stat-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stat-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      font-family: var(--font-head);
+      color: #fff;
+    }
+    .stat-name {
+      color: var(--gold);
+      font-weight: bold;
+      font-size: 0.65rem;
+      letter-spacing: 0.05em;
+    }
+    .bar-outer {
+      height: 6px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 3px;
+      display: flex;
+      overflow: hidden;
+    }
+    .bar-left {
+      height: 100%;
+      background: #003087; /* Team 1 Color */
+      border-radius: 3px 0 0 3px;
+    }
+    .bar-right {
+      height: 100%;
+      background: #C8102E; /* Team 2 Color */
+      border-radius: 0 3px 3px 0;
+    }
+    
+    /* Slide 3: Tactical field layout */
+    .tactical-field {
+      width: 100%;
+      height: 100%;
+      min-height: 280px;
+      background: radial-gradient(circle, rgba(0, 155, 58, 0.15) 0%, rgba(2, 8, 18, 0.4) 100%),
+                  repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.01) 40px, rgba(255,255,255,0.01) 80px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .tactical-field::before {
+      content: '';
+      position: absolute;
+      left: 50%; top: 0; bottom: 0;
+      width: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+    .tactical-field::after {
+      content: '';
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .tactical-player {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 0.55rem;
+      font-weight: bold;
+      font-family: var(--font-head);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 6px rgba(255,255,255,0.4);
+    }
+    .tactical-player.team-home {
+      background: #003087;
+      border: 1px solid #fff;
+    }
+    .tactical-player.team-away {
+      background: #C8102E;
+      border: 1px solid #fff;
+    }
+
+    /* Timeline / Events Styles */
+    .timeline-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 4px 8px;
+    }
+    .timeline-event {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      position: relative;
+      padding-bottom: 12px;
+    }
+    .timeline-event:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 41px;
+      top: 24px;
+      bottom: 0;
+      width: 2px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .timeline-time {
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--gold);
+      width: 30px;
+      text-align: right;
+      padding-top: 3px;
+    }
+    .timeline-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      z-index: 2;
+    }
+    .timeline-content {
+      flex: 1;
+    }
+    .timeline-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .timeline-desc {
+      font-size: 0.65rem;
+      color: var(--subtext);
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body class="serie-b-ao-vivo-body">
+  <canvas id="particleCanvas"></canvas>
+  <div class="scanlines"></div>
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="top-bar">
+    <div class="top-bar__left">
+      <a href="brasileirao-serie-b.html" class="back-btn">⬅ VOLTAR</a>
+      <div class="fifa-badge" style="border-color: #009b3a;">
+        <span class="fifa-badge__top" style="color: #ffdf00;">SÉRIE B</span>
+        <span class="fifa-badge__mid">⚽</span>
+        <span class="fifa-badge__bot" style="color: #fff;">LIVE</span>
+      </div>
+    </div>
+
+    <!-- Center Score Banner -->
+    <div class="top-bar__center-score">
+      <div class="score-banner">
+        <span class="score-team" id="scoreTeamHome">HOME</span>
+        <!-- Home SVG Shield Logo -->
+        <svg class="score-svg" viewBox="0 0 100 100" width="22" height="22" style="display: inline-block; vertical-align: middle; margin: 0 4px;">
+          <path d="M10 10 L90 10 C90 60 50 95 50 95 C50 95 10 60 10 10 Z" fill="#003087" stroke="#fff" stroke-width="4"/>
+          <text x="50" y="55" font-family="'Orbitron', sans-serif" font-weight="900" font-size="28" fill="#fff" text-anchor="middle">H</text>
+        </svg>
+        <span class="score-digits" id="liveScoreHome">0</span>
+        <span class="score-separator">:</span>
+        <span class="score-digits" id="liveScoreAway">0</span>
+        <!-- Away SVG Shield Logo -->
+        <svg class="score-svg" viewBox="0 0 100 100" width="22" height="22" style="display: inline-block; vertical-align: middle; margin: 0 4px;">
+          <path d="M10 15 L90 15 L90 50 C90 75 50 95 50 95 C50 95 10 75 10 50 Z" fill="#C8102E" stroke="#fff" stroke-width="4"/>
+          <text x="50" y="58" font-family="'Orbitron', sans-serif" font-weight="900" font-size="28" fill="#fff" text-anchor="middle">A</text>
+        </svg>
+        <span class="score-team" id="scoreTeamAway">AWAY</span>
+        <span class="live-indicator-tag" id="liveIndicator"><span class="indicator-dot"></span> AGUARDANDO</span>
+      </div>
+    </div>
+
+    <!-- Clock Panel -->
+    <div class="clocks-panel">
+      <div class="clock-card"><span class="clock-card__flag">🌎</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">SEU HORÁRIO</span>
+          <span class="clock-card__time" id="time-usa">--:--:--</span>
+          <span class="clock-card__date" id="date-usa">-- --- ----</span>
+        </div>
+      </div>
+      <div class="clock-divider"></div>
+      <div class="clock-card"><span class="clock-card__flag">🇧🇷</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">BRASÍLIA / BRT</span>
+          <span class="clock-card__time" id="time-bra">--:--:--</span>
+          <span class="clock-card__date" id="date-bra">-- --- ----</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== PAGE WRAP DUAL VIEWPORTS ===== -->
+  <div class="page-content-split">
+    
+    <!-- LEFT COLUMN: LIVE VIDEO STREAM CONTAINER -->
+    <div class="player-column">
+      <div class="player-container">
+        
+        <!-- Video screen poster -->
+        <div class="video-poster">
+          <div class="play-btn-glow" onclick="alert('Transmissão ao vivo iniciada!')">
+            <svg class="play-icon-svg" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+          <div class="live-stream-overlay-text" id="streamMatchTitle">CARREGANDO PARTIDA...</div>
+          <div class="live-stream-overlay-sub">Brasileirão Série B 2026 - Transmissão Exclusiva</div>
+        </div>
+
+        <div style="flex:1;"></div>
+
+        <!-- Lower status info bar -->
+        <div class="stream-status-bar">
+          <div class="stream-info-left">
+            <span class="stream-indicator-live"><span class="live-dot" style="margin-right:4px;"></span> AO VIVO</span>
+            <span>📺 SINAL: 1080p 60FPS</span>
+            <span>🔊 5.1 MULTICHANNEL</span>
+          </div>
+          <div id="elapsedStatus">TEMPO: AGUARDANDO INÍCIO</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: INTERACTIVE TABS & CAROUSEL CARD -->
+    <div class="carousel-column">
+      <div class="carousel-card">
+        
+        <!-- Arrows carousel nav -->
+        <div class="carousel-nav-arrows">
+          <button class="arrow-btn" onclick="prevSlide()" title="Anterior">◀</button>
+          <button class="arrow-btn" onclick="nextSlide()" title="Próximo">▶</button>
+        </div>
+
+        <!-- Tab heads -->
+        <div class="tabs-header">
+          <button class="tab-btn active" id="tab0" onclick="showSlide(0)">ESCALAÇÃO</button>
+          <button class="tab-btn" id="tab1" onclick="showSlide(1)">ESTATÍSTICAS</button>
+          <button class="tab-btn" id="tab2" onclick="showSlide(2)">CAMPO TÁTICO</button>
+          <button class="tab-btn" id="tab3" onclick="showSlide(3)">DADOS DA PARTIDA</button>
+        </div>
+
+        <!-- Slide Wrapper -->
+        <div class="carousel-wrapper">
+          
+          <!-- Slide 1: Lineup lists -->
+          <div class="carousel-slide active" id="slide0">
+            <div class="lineup-split">
+              <!-- Home team -->
+              <div>
+                <div class="lineup-title" id="lineupTitleHome">MANDANTE</div>
+                <ul class="lineup-list" id="lineupListHome">
+                  <li class="lineup-item"><span class="lineup-num">1</span><span class="lineup-name">Goleiro Titular</span></li>
+                  <li class="lineup-item"><span class="lineup-num">2</span><span class="lineup-name">Lateral Direito</span></li>
+                  <li class="lineup-item"><span class="lineup-num">3</span><span class="lineup-name">Zagueiro Central</span></li>
+                  <li class="lineup-item"><span class="lineup-num">4</span><span class="lineup-name">Zagueiro Esquerdo</span></li>
+                  <li class="lineup-item"><span class="lineup-num">6</span><span class="lineup-name">Lateral Esquerdo</span></li>
+                  <li class="lineup-item"><span class="lineup-num">5</span><span class="lineup-name">Volante</span></li>
+                  <li class="lineup-item"><span class="lineup-num">8</span><span class="lineup-name">Meia Armador</span></li>
+                  <li class="lineup-item"><span class="lineup-num">10</span><span class="lineup-name">Ponta Direita</span></li>
+                  <li class="lineup-item"><span class="lineup-num">7</span><span class="lineup-name">Ponta Esquerda</span></li>
+                  <li class="lineup-item"><span class="lineup-num">11</span><span class="lineup-name">Meia Atacante</span></li>
+                  <li class="lineup-item"><span class="lineup-num">9</span><span class="lineup-name">Centroavante</span></li>
+                </ul>
+                <div class="coach-row" id="coachHome">Téc: Preparador Técnico</div>
+              </div>
+              
+              <!-- Away team -->
+              <div>
+                <div class="lineup-title" id="lineupTitleAway">VISITANTE</div>
+                <ul class="lineup-list" id="lineupListAway">
+                  <li class="lineup-item"><span class="lineup-num">12</span><span class="lineup-name">Goleiro Titular</span></li>
+                  <li class="lineup-item"><span class="lineup-num">2</span><span class="lineup-name">Lateral Direito</span></li>
+                  <li class="lineup-item"><span class="lineup-num">3</span><span class="lineup-name">Zagueiro Central</span></li>
+                  <li class="lineup-item"><span class="lineup-num">4</span><span class="lineup-name">Zagueiro Esquerdo</span></li>
+                  <li class="lineup-item"><span class="lineup-num">6</span><span class="lineup-name">Lateral Esquerdo</span></li>
+                  <li class="lineup-item"><span class="lineup-num">5</span><span class="lineup-name">Volante</span></li>
+                  <li class="lineup-item"><span class="lineup-num">8</span><span class="lineup-name">Meia Armador</span></li>
+                  <li class="lineup-item"><span class="lineup-num">10</span><span class="lineup-name">Ponta Direita</span></li>
+                  <li class="lineup-item"><span class="lineup-num">7</span><span class="lineup-name">Ponta Esquerda</span></li>
+                  <li class="lineup-item"><span class="lineup-num">11</span><span class="lineup-name">Meia Atacante</span></li>
+                  <li class="lineup-item"><span class="lineup-num">9</span><span class="lineup-name">Centroavante</span></li>
+                </ul>
+                <div class="coach-row" id="coachAway">Téc: Preparador Técnico</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Slide 2: Comparative Stats sliders -->
+          <div class="carousel-slide" id="slide1">
+            <div class="stats-container" id="statsContainer">
+              <!-- Posse de bola -->
+              <div class="stat-row">
+                <div class="stat-labels">
+                  <span id="statHomePoss">50%</span>
+                  <span class="stat-name">Posse de Bola</span>
+                  <span id="statAwayPoss">50%</span>
+                </div>
+                <div class="bar-outer">
+                  <div class="bar-left" id="barHomePoss" style="width: 50%;"></div>
+                  <div class="bar-right" id="barAwayPoss" style="width: 50%;"></div>
+                </div>
+              </div>
+
+              <!-- Finalizações -->
+              <div class="stat-row">
+                <div class="stat-labels">
+                  <span id="statHomeShots">8</span>
+                  <span class="stat-name">Finalizações (Chutes)</span>
+                  <span id="statAwayShots">6</span>
+                </div>
+                <div class="bar-outer">
+                  <div class="bar-left" id="barHomeShots" style="width: 55%;"></div>
+                  <div class="bar-right" id="barAwayShots" style="width: 45%;"></div>
+                </div>
+              </div>
+
+              <!-- Escanteios -->
+              <div class="stat-row">
+                <div class="stat-labels">
+                  <span id="statHomeCorners">5</span>
+                  <span class="stat-name">Escanteios</span>
+                  <span id="statAwayCorners">4</span>
+                </div>
+                <div class="bar-outer">
+                  <div class="bar-left" id="barHomeCorners" style="width: 55%;"></div>
+                  <div class="bar-right" id="barAwayCorners" style="width: 45%;"></div>
+                </div>
+              </div>
+
+              <!-- Faltas Cometidas -->
+              <div class="stat-row">
+                <div class="stat-labels">
+                  <span id="statHomeFouls">12</span>
+                  <span class="stat-name">Faltas Cometidas</span>
+                  <span id="statAwayFouls">11</span>
+                </div>
+                <div class="bar-outer">
+                  <div class="bar-left" id="barHomeFouls" style="width: 52%;"></div>
+                  <div class="bar-right" id="barAwayFouls" style="width: 48%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Slide 3: Tactical field blueprint -->
+          <div class="carousel-slide" id="slide2">
+            <div class="tactical-field">
+              <!-- Home Team players (Fortaleza/etc) -->
+              <div class="tactical-player team-home" style="left: 10%; top: 50%;">1</div>
+              <div class="tactical-player team-home" style="left: 26%; top: 20%;">2</div>
+              <div class="tactical-player team-home" style="left: 22%; top: 40%;">3</div>
+              <div class="tactical-player team-home" style="left: 22%; top: 60%;">4</div>
+              <div class="tactical-player team-home" style="left: 26%; top: 80%;">6</div>
+              <div class="tactical-player team-home" style="left: 36%; top: 35%;">5</div>
+              <div class="tactical-player team-home" style="left: 36%; top: 65%;">8</div>
+              <div class="tactical-player team-home" style="left: 44%; top: 50%;">10</div>
+              <div class="tactical-player team-home" style="left: 48%; top: 20%;">22</div>
+              <div class="tactical-player team-home" style="left: 48%; top: 80%;">11</div>
+              <div class="tactical-player team-home" style="left: 49%; top: 50%;">9</div>
+
+              <!-- Away Team players -->
+              <div class="tactical-player team-away" style="left: 90%; top: 50%;">12</div>
+              <div class="tactical-player team-away" style="left: 74%; top: 20%;">2</div>
+              <div class="tactical-player team-away" style="left: 78%; top: 40%;">3</div>
+              <div class="tactical-player team-away" style="left: 78%; top: 60%;">4</div>
+              <div class="tactical-player team-away" style="left: 74%; top: 80%;">6</div>
+              <div class="tactical-player team-away" style="left: 64%; top: 35%;">5</div>
+              <div class="tactical-player team-away" style="left: 64%; top: 65%;">8</div>
+              <div class="tactical-player team-away" style="left: 56%; top: 50%;">10</div>
+              <div class="tactical-player team-away" style="left: 52%; top: 20%;">11</div>
+              <div class="tactical-player team-away" style="left: 52%; top: 80%;">7</div>
+              <div class="tactical-player team-away" style="left: 51%; top: 50%;">9</div>
+            </div>
+          </div>
+
+          <!-- Slide 4: Timeline events / Dados da partida -->
+          <div class="carousel-slide" id="slide3">
+            <div class="timeline-container" id="timelineList">
+              <div class="timeline-event">
+                <span class="timeline-time">0'</span>
+                <span class="timeline-badge" style="background: rgba(255,255,255,0.05);">🏁</span>
+                <div class="timeline-content">
+                  <div class="timeline-title">PARTIDA AGUARDANDO INÍCIO</div>
+                  <div class="timeline-desc">Aguardando o início do sinal da transmissão oficial.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span>© 2026 Brasileirão Série B · Transmissão Oficial de Futebol 24h</span>
+    <span class="footer-live"><span class="live-dot"></span> AO VIVO</span>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  <script>
+    // ── get url parameters ──────────────────────────────────
+    function getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+    const MATCH_ID = getQueryParam('id');
+
+    // ── clocks ──────────────────────────────────────────────
+    const DAYS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    const MONTHS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    function pad(n){return String(n).padStart(2,'0');}
+    function zoneDate(off){const n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*6e4+off*36e5);}
+    function updateClocks(){
+      const local=new Date(),b=zoneDate(-3);
+      const lTime = document.getElementById('time-usa');
+      const lDate = document.getElementById('date-usa');
+      if (lTime) lTime.textContent=`${pad(local.getHours())}:${pad(local.getMinutes())}:${pad(local.getSeconds())}`;
+      if (lDate) lDate.textContent=`${DAYS[local.getDay()]}, ${pad(local.getDate())} ${MONTHS[local.getMonth()]} ${local.getFullYear()}`;
+      document.getElementById('time-bra').textContent=`${pad(b.getHours())}:${pad(b.getMinutes())}:${pad(b.getSeconds())}`;
+      document.getElementById('date-bra').textContent=`${DAYS[b.getDay()]}, ${pad(b.getDate())} ${MONTHS[b.getMonth()]} ${b.getFullYear()}`;
+    }
+    updateClocks(); setInterval(updateClocks, 1000);
+
+    // ── carousel slide logic ────────────────────────────────
+    let currentSlide = 0;
+    const slidesCount = 4;
+    let autoPlayInterval = null;
+
+    function showSlide(index) {
+      currentSlide = (index + slidesCount) % slidesCount;
+
+      // Update slides
+      for (let i = 0; i < slidesCount; i++) {
+        const slide = document.getElementById(`slide${i}`);
+        const tabBtn = document.getElementById(`tab${i}`);
+        if (i === currentSlide) {
+          slide.classList.add('active');
+          tabBtn.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+          tabBtn.classList.remove('active');
+        }
+      }
+    }
+
+    function nextSlide() { showSlide(currentSlide + 1); }
+    function prevSlide() { showSlide(currentSlide - 1); }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      autoPlayInterval = setInterval(nextSlide, 10000); // 10s auto-rotate
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayInterval) clearInterval(autoPlayInterval);
+    }
+
+    // Wrap showSlide to reset autoplay timer on click
+    const originalShowSlide = showSlide;
+    showSlide = function(index) {
+      originalShowSlide(index);
+      startAutoPlay(); // reset 10s timer
+    };
+
+    // Start auto rotation initially
+    startAutoPlay();
+
+    // ── dynamic API match loader ────────────────────────────
+    let matchCached = null;
+
+    async function loadMatchDetails() {
+      if (!MATCH_ID) {
+        document.getElementById('streamMatchTitle').textContent = "SEM PARTIDA SELECIONADA";
+        return;
+      }
+
+      try {
+        // Fetch specific fixture details
+        const fixture = await API.getFixture(MATCH_ID);
+        if (!fixture) return;
+        
+        matchCached = fixture;
+
+        // Update titles
+        const hName = fixture.homeTeam?.name || 'MANDANTE';
+        const aName = fixture.awayTeam?.name || 'VISITANTE';
+        document.getElementById('scoreTeamHome').textContent = hName.toUpperCase();
+        document.getElementById('scoreTeamAway').textContent = aName.toUpperCase();
+        document.getElementById('streamMatchTitle').textContent = `${hName} x ${aName}`;
+        document.getElementById('lineupTitleHome').textContent = `🦁 ${hName}`;
+        document.getElementById('lineupTitleAway').textContent = `🔴 ${aName}`;
+
+        // Update scores
+        const hGoals = fixture.homeGoals !== null ? fixture.homeGoals : 0;
+        const aGoals = fixture.awayGoals !== null ? fixture.awayGoals : 0;
+        document.getElementById('liveScoreHome').textContent = hGoals;
+        document.getElementById('liveScoreAway').textContent = aGoals;
+
+        // Update stream indicator status
+        const live = API.isLive(fixture.statusShort);
+        const done = API.isFinished(fixture.statusShort);
+        const indicator = document.getElementById('liveIndicator');
+        const elapsed = document.getElementById('elapsedStatus');
+
+        if (live) {
+          indicator.className = 'live-indicator-tag';
+          indicator.style.color = 'var(--red)';
+          indicator.style.borderColor = 'var(--red)';
+          indicator.innerHTML = `<span class="indicator-dot"></span> AO VIVO`;
+          elapsed.textContent = `TEMPO: ${API.statusLabel(fixture.statusShort, fixture.elapsed).toUpperCase()}`;
+        } else if (done) {
+          indicator.className = 'live-indicator-tag';
+          indicator.style.color = '#00C851';
+          indicator.style.borderColor = '#00C851';
+          indicator.innerHTML = `<span class="indicator-dot" style="background:#00C851;"></span> CONCLUÍDO`;
+          elapsed.textContent = `STATUS: ENCERRADO`;
+        } else {
+          indicator.className = 'live-indicator-tag';
+          indicator.style.color = 'var(--gold)';
+          indicator.style.borderColor = 'var(--gold)';
+          indicator.innerHTML = `<span class="indicator-dot" style="background:var(--gold);"></span> AGUARDANDO`;
+          elapsed.textContent = `INÍCIO: 🇧🇷 ${API.toBrazilTime(fixture.date)}`;
+        }
+
+        // Generate team names for Mock Lineups if not present
+        generateMockLineups(hName, aName);
+        
+        // Generate Mock Stats
+        generateMockStats(hGoals, aGoals);
+
+        // Generate Mock Timeline
+        generateMockTimeline(hName, aName, hGoals, aGoals, fixture.statusShort);
+
+      } catch (err) {
+        console.warn("Could not load dynamic match details:", err);
+      }
+    }
+
+    function generateMockLineups(hName, aName) {
+      // Mock rosters to look realistic
+      const hList = document.getElementById('lineupListHome');
+      const aList = document.getElementById('lineupListAway');
+      
+      const homeNames = ["Matheus", "Thiago", "Rodrigo", "Marcão", "Victor", "Marlon", "Felipe", "Douglas", "Alisson", "Diego", "Breno"];
+      const awayNames = ["Gustavo", "Ruan", "Leo", "Renan", "Wellington", "Lucas", "Bruno", "Eduardo", "Roni", "Caio", "Jeferson"];
+
+      hList.innerHTML = homeNames.map((name, i) => `<li class="lineup-item"><span class="lineup-num">${i+1}</span><span class="lineup-name">${name}</span></li>`).join('');
+      aList.innerHTML = awayNames.map((name, i) => `<li class="lineup-item"><span class="lineup-num">${i+12}</span><span class="lineup-name">${name}</span></li>`).join('');
+      
+      document.getElementById('coachHome').textContent = `Téc: Técnico do ${hName}`;
+      document.getElementById('coachAway').textContent = `Téc: Técnico do ${aName}`;
+    }
+
+    function generateMockStats(hGoals, aGoals) {
+      // Create random but sensible stats based on goals
+      const totalPoss = 100;
+      const hPoss = hGoals > aGoals ? 54 : hGoals < aGoals ? 46 : 50;
+      const aPoss = totalPoss - hPoss;
+
+      document.getElementById('statHomePoss').textContent = `${hPoss}%`;
+      document.getElementById('statAwayPoss').textContent = `${aPoss}%`;
+      document.getElementById('barHomePoss').style.width = `${hPoss}%`;
+      document.getElementById('barAwayPoss').style.width = `${aPoss}%`;
+
+      const hShots = 5 + (hGoals * 3) + Math.floor(Math.random()*3);
+      const aShots = 4 + (aGoals * 2) + Math.floor(Math.random()*3);
+      const totalShots = hShots + aShots;
+      document.getElementById('statHomeShots').textContent = hShots;
+      document.getElementById('statAwayShots').textContent = aShots;
+      document.getElementById('barHomeShots').style.width = `${(hShots/totalShots)*100}%`;
+      document.getElementById('barAwayShots').style.width = `${(aShots/totalShots)*100}%`;
+
+      const hCorners = 2 + hGoals + Math.floor(Math.random()*4);
+      const aCorners = 2 + aGoals + Math.floor(Math.random()*3);
+      const totalCorners = hCorners + aCorners;
+      document.getElementById('statHomeCorners').textContent = hCorners;
+      document.getElementById('statAwayCorners').textContent = aCorners;
+      document.getElementById('barHomeCorners').style.width = `${(hCorners/totalCorners)*100}%`;
+      document.getElementById('barAwayCorners').style.width = `${(aCorners/totalCorners)*100}%`;
+
+      const hFouls = 8 + Math.floor(Math.random()*7);
+      const aFouls = 8 + Math.floor(Math.random()*8);
+      const totalFouls = hFouls + aFouls;
+      document.getElementById('statHomeFouls').textContent = hFouls;
+      document.getElementById('statAwayFouls').textContent = aFouls;
+      document.getElementById('barHomeFouls').style.width = `${(hFouls/totalFouls)*100}%`;
+      document.getElementById('barAwayFouls').style.width = `${(aFouls/totalFouls)*100}%`;
+    }
+
+    function generateMockTimeline(hName, aName, hGoals, aGoals, statusShort) {
+      const timeline = document.getElementById('timelineList');
+      
+      if (statusShort === 'NS') {
+        timeline.innerHTML = `
+          <div class="timeline-event">
+            <span class="timeline-time">0'</span>
+            <span class="timeline-badge" style="background: rgba(255,255,255,0.05);">🏁</span>
+            <div class="timeline-content">
+              <div class="timeline-title">PARTIDA AGUARDANDO INÍCIO</div>
+              <div class="timeline-desc">Aguardando o início do sinal da transmissão oficial.</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Build simulated events based on goals count
+      let eventsHTML = `
+        <div class="timeline-event">
+          <span class="timeline-time">0'</span>
+          <span class="timeline-badge" style="background: rgba(0,200,81,0.15);">🏁</span>
+          <div class="timeline-content">
+            <div class="timeline-title">AUTORIZA O ÁRBITRO!</div>
+            <div class="timeline-desc">Bola rolando para a partida da Série B!</div>
+          </div>
+        </div>
+      `;
+
+      let currentMinute = 12;
+      let homeGoalsDone = 0;
+      let awayGoalsDone = 0;
+
+      while (homeGoalsDone < hGoals || awayGoalsDone < aGoals) {
+        currentMinute += 10 + Math.floor(Math.random() * 15);
+        if (currentMinute > 90) currentMinute = 88;
+
+        if (homeGoalsDone < hGoals && (Math.random() > 0.5 || awayGoalsDone === aGoals)) {
+          homeGoalsDone++;
+          eventsHTML += `
+            <div class="timeline-event">
+              <span class="timeline-time">${currentMinute}'</span>
+              <span class="timeline-badge" style="background: rgba(255,215,0,0.15);">⚽</span>
+              <div class="timeline-content">
+                <div class="timeline-title">GOL DO ${hName.toUpperCase()}! (${homeGoalsDone} - ${awayGoalsDone})</div>
+                <div class="timeline-desc">Finalização precisa e torcida mandante explode em comemoração!</div>
+              </div>
+            </div>
+          `;
+        } else {
+          awayGoalsDone++;
+          eventsHTML += `
+            <div class="timeline-event">
+              <span class="timeline-time">${currentMinute}'</span>
+              <span class="timeline-badge" style="background: rgba(255,215,0,0.15);">⚽</span>
+              <div class="timeline-content">
+                <div class="timeline-title">GOL DO ${aName.toUpperCase()}! (${homeGoalsDone} - ${awayGoalsDone})</div>
+                <div class="timeline-desc">Contra-ataque rápido e conclusão certeira do time visitante.</div>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      // Add a random substitution and card to make it look full
+      eventsHTML += `
+        <div class="timeline-event">
+          <span class="timeline-time">62'</span>
+          <span class="timeline-badge" style="background: rgba(0,123,255,0.2);">🔄</span>
+          <div class="timeline-content">
+            <div class="timeline-title">SUBSTITUIÇÃO (Mandante)</div>
+            <div class="timeline-desc">Mudança tática do treinador buscando dar fôlego novo ao ataque.</div>
+          </div>
+        </div>
+        <div class="timeline-event">
+          <span class="timeline-time">74'</span>
+          <span class="timeline-badge" style="background: rgba(255,193,7,0.2);">🟨</span>
+          <div class="timeline-content">
+            <div class="timeline-title">CARTÃO AMARELO (Visitante)</div>
+            <div class="timeline-desc">Falta tática no círculo central para interromper contra-ataque promissor.</div>
+          </div>
+        </div>
+      `;
+
+      if (API.isFinished(statusShort)) {
+        eventsHTML += `
+          <div class="timeline-event">
+            <span class="timeline-time">90'</span>
+            <span class="timeline-badge" style="background: rgba(255,255,255,0.05);">🏁</span>
+            <div class="timeline-content">
+              <div class="timeline-title">FIM DE JOGO!</div>
+              <div class="timeline-desc">O árbitro encerra a partida. Placar final: ${hGoals} - ${aGoals}.</div>
+            </div>
+          </div>
+        `;
+      }
+
+      timeline.innerHTML = eventsHTML;
+    }
+
+    loadMatchDetails();
+    setInterval(loadMatchDetails, CONFIG.REFRESH_INTERVAL);
+
+    // particles
+    const cv=document.getElementById('particleCanvas'),ctx2=cv.getContext('2d');
+    let W2,H2,pts=[];
+    function resize(){W2=cv.width=window.innerWidth;H2=cv.height=window.innerHeight;}
+    function mkPt(){return{x:Math.random()*W2,y:H2+10,vx:(Math.random()-.5)*.4,vy:-(Math.random()*.5+.2),a:Math.random()*.35+.08,s:Math.random()*9+5,r:0,rs:(Math.random()-.5)*.02};}
+    function animPts(){
+      ctx2.clearRect(0,0,W2,H2);
+      if(pts.length<20)pts.push(mkPt());
+      pts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.r+=p.rs;p.a-=.0004;
+        ctx2.save();ctx2.globalAlpha=Math.max(0,p.a);ctx2.translate(p.x,p.y);ctx2.rotate(p.r);
+        ctx2.font=`${p.s}px serif`;ctx2.fillStyle='rgba(255,215,0,.5)';ctx2.fillText('⚽',0,0);
+        ctx2.restore();if(p.y<-20||p.a<=0)pts.splice(i,1);
+      });requestAnimationFrame(animPts);
+    }
+    window.addEventListener('resize',resize);resize();animPts();
+  </script>
+</body>
+</html>

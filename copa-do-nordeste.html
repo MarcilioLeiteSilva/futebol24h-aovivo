@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Copa do Nordeste – Transmissão da Final</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
   <style>
     /* Estilos isolados para a página da final da Copa do Nordeste */
     body.nordeste-final-body {
@@ -15,6 +18,7 @@
       display: flex;
       flex-direction: column;
     }
+
     body.nordeste-final-body .page-wrap {
       flex: 1;
       display: flex;
@@ -23,10 +27,12 @@
       padding: 8px 32px 4px;
       overflow: hidden;
     }
+
     .page-title {
       text-align: center;
       padding: 8px 0;
     }
+
     .page-title h1 {
       font-family: var(--font-disp);
       font-size: clamp(2rem, 5vw, 3.2rem);
@@ -35,12 +41,13 @@
       margin: 0;
       text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
     }
+
     .page-title p {
       font-size: 0.75rem;
       letter-spacing: 0.25em;
       color: var(--subtext);
     }
-    
+
     /* Top stats cards */
     .top-stats-grid {
       display: grid;
@@ -50,6 +57,7 @@
       margin: 4px auto 12px;
       width: 100%;
     }
+
     .stat-card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 215, 0, 0.15);
@@ -58,12 +66,14 @@
       text-align: center;
       backdrop-filter: blur(8px);
     }
+
     .stat-card__val {
       font-family: var(--font-head);
       font-size: 1rem;
       font-weight: 700;
       color: #fff;
     }
+
     .stat-card__lbl {
       font-size: 0.6rem;
       color: var(--subtext);
@@ -83,6 +93,7 @@
       flex: 1;
       align-items: center;
     }
+
     .final-match-card {
       background: linear-gradient(135deg, rgba(2, 8, 18, 0.8), rgba(6, 15, 30, 0.8));
       border: 2px solid rgba(255, 215, 0, 0.2);
@@ -99,15 +110,18 @@
       backdrop-filter: blur(16px);
       transition: all 0.3s ease;
     }
+
     .final-match-card:hover {
       border-color: var(--gold);
       box-shadow: 0 15px 40px rgba(255, 215, 0, 0.15);
       transform: translateY(-2px);
     }
+
     .final-match-card.is-live {
       border-color: var(--red);
       box-shadow: 0 0 30px rgba(200, 16, 46, 0.3);
     }
+
     .final-match-card__header {
       font-family: var(--font-head);
       font-size: 0.75rem;
@@ -119,16 +133,18 @@
       padding-bottom: 8px;
       margin-bottom: 12px;
     }
+
     .final-match-card.is-live .final-match-card__header {
       color: var(--red);
     }
-    
+
     .final-match-teams {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin: 8px 0;
     }
+
     .final-team {
       display: flex;
       flex-direction: column;
@@ -136,16 +152,19 @@
       width: 35%;
       text-align: center;
     }
+
     .final-logo {
       width: clamp(70px, 9vw, 100px);
       height: clamp(70px, 9vw, 100px);
       object-fit: contain;
-      filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
+      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
       transition: transform 0.3s ease;
     }
+
     .final-match-card:hover .final-logo {
       transform: scale(1.08);
     }
+
     .final-team-name {
       font-family: var(--font-body);
       font-size: 0.85rem;
@@ -153,6 +172,7 @@
       color: #fff;
       margin-top: 8px;
     }
+
     .final-score-area {
       display: flex;
       flex-direction: column;
@@ -160,28 +180,33 @@
       justify-content: center;
       width: 30%;
     }
+
     .final-score {
       font-family: var(--font-head);
       font-size: clamp(2rem, 5vw, 3.2rem);
       font-weight: 900;
       color: #fff;
-      text-shadow: 0 0 15px rgba(255,255,255,0.2);
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
     }
+
     .final-score-vs {
       font-family: var(--font-disp);
       font-size: 1.5rem;
       color: var(--gold);
       letter-spacing: 0.1em;
     }
+
     .final-match-details {
       text-align: center;
       font-size: 0.7rem;
       color: var(--subtext);
       margin-top: 6px;
     }
+
     .final-match-details div {
       margin-bottom: 2px;
     }
+
     .watch-btn {
       display: block;
       width: 100%;
@@ -201,12 +226,13 @@
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(0, 155, 58, 0.4);
     }
+
     .watch-btn:hover {
       background: linear-gradient(90deg, #ffdf00, #009b3a);
       box-shadow: 0 6px 20px rgba(255, 223, 0, 0.6);
       transform: translateY(-1px);
     }
-    
+
     /* Bottom news banner */
     .news-banner {
       width: 100%;
@@ -221,6 +247,7 @@
       border-radius: 12px;
       overflow: hidden;
     }
+
     .news-banner__title {
       font-family: var(--font-head);
       font-size: 0.7rem;
@@ -232,31 +259,65 @@
       letter-spacing: 0.1em;
       white-space: nowrap;
     }
+
     .news-banner__list {
       flex: 1;
       display: flex;
       overflow: hidden;
     }
+
     .news-banner__ticker {
       display: flex;
       gap: 60px;
       animation: newsTicker 35s linear infinite;
       white-space: nowrap;
     }
+
     .news-banner__ticker span {
       font-size: 0.78rem;
       color: var(--text);
       font-weight: 500;
     }
-    
-    @keyframes newsTicker {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    
 
+    @keyframes newsTicker {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    @media (max-width: 900px) {
+      body.nordeste-final-body {
+        height: auto;
+        overflow: auto;
+      }
+
+      body.nordeste-final-body .page-wrap {
+        height: auto;
+        overflow: auto;
+        gap: 24px;
+        padding: 16px;
+      }
+
+      .top-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .final-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .final-match-card {
+        max-height: none;
+      }
+    }
   </style>
 </head>
+
 <body class="nordeste-final-body">
   <canvas id="particleCanvas"></canvas>
   <div class="scanlines"></div>
@@ -318,21 +379,23 @@
 
     <!-- ===== FINAL DECISION GRID ===== -->
     <div class="final-grid">
-      
+
       <!-- JOGO DE IDA (Final Match 1) -->
       <div class="final-match-card">
         <div class="final-match-card__header">🏆 JOGO DE IDA – ENCERRADO</div>
-        
+
         <div class="final-match-teams">
           <div class="final-team">
             <!-- CRB SVG Logo -->
             <svg class="final-logo svg-logo" viewBox="0 0 100 100" width="100" height="100" style="display: block;">
-              <path d="M10 15 L90 15 L90 50 C90 75 50 95 50 95 C50 95 10 75 10 50 Z" fill="#fff" stroke="#C8102E" stroke-width="4"/>
-              <path d="M10 15 L90 15 L90 42 L10 42 Z" fill="#C8102E"/>
-              <text x="50" y="34" font-family="'Orbitron', sans-serif" font-weight="900" font-size="18" fill="#fff" text-anchor="middle">CRB</text>
-              <line x1="32" y1="50" x2="32" y2="84" stroke="#C8102E" stroke-width="7"/>
-              <line x1="50" y1="50" x2="50" y2="90" stroke="#C8102E" stroke-width="7"/>
-              <line x1="68" y1="50" x2="68" y2="84" stroke="#C8102E" stroke-width="7"/>
+              <path d="M10 15 L90 15 L90 50 C90 75 50 95 50 95 C50 95 10 75 10 50 Z" fill="#fff" stroke="#C8102E"
+                stroke-width="4" />
+              <path d="M10 15 L90 15 L90 42 L10 42 Z" fill="#C8102E" />
+              <text x="50" y="34" font-family="'Orbitron', sans-serif" font-weight="900" font-size="18" fill="#fff"
+                text-anchor="middle">CRB</text>
+              <line x1="32" y1="50" x2="32" y2="84" stroke="#C8102E" stroke-width="7" />
+              <line x1="50" y1="50" x2="50" y2="90" stroke="#C8102E" stroke-width="7" />
+              <line x1="68" y1="50" x2="68" y2="84" stroke="#C8102E" stroke-width="7" />
             </svg>
             <span class="final-team-name">CRB</span>
           </div>
@@ -344,11 +407,13 @@
           <div class="final-team">
             <!-- Fortaleza SVG Logo -->
             <svg class="final-logo svg-logo" viewBox="0 0 100 100" width="100" height="100" style="display: block;">
-              <path d="M10 10 L90 10 C90 60 50 95 50 95 C50 95 10 60 10 10 Z" fill="#003087" stroke="#fff" stroke-width="3"/>
-              <path d="M10 38 L90 38 C90 60 50 95 50 95 C50 95 10 60 10 38 Z" fill="#C8102E"/>
-              <path d="M22 38 L22 80 C29 86 50 93 50 93 C50 93 71 86 78 80 L78 38 Z" fill="#fff"/>
-              <path d="M32 38 L32 83 C38 87 50 91 50 91 C50 91 62 87 68 83 L68 38 Z" fill="#C8102E"/>
-              <text x="50" y="28" font-family="'Orbitron', sans-serif" font-weight="900" font-size="16" fill="#fff" text-anchor="middle">FEC</text>
+              <path d="M10 10 L90 10 C90 60 50 95 50 95 C50 95 10 60 10 10 Z" fill="#003087" stroke="#fff"
+                stroke-width="3" />
+              <path d="M10 38 L90 38 C90 60 50 95 50 95 C50 95 10 60 10 38 Z" fill="#C8102E" />
+              <path d="M22 38 L22 80 C29 86 50 93 50 93 C50 93 71 86 78 80 L78 38 Z" fill="#fff" />
+              <path d="M32 38 L32 83 C38 87 50 91 50 91 C50 91 62 87 68 83 L68 38 Z" fill="#C8102E" />
+              <text x="50" y="28" font-family="'Orbitron', sans-serif" font-weight="900" font-size="16" fill="#fff"
+                text-anchor="middle">FEC</text>
             </svg>
             <span class="final-team-name">Fortaleza</span>
           </div>
@@ -359,8 +424,9 @@
           <div>📍 Estádio Rei Pelé, Maceió – AL</div>
           <div>📅 Jogo Realizado: 05 Junho 2026</div>
         </div>
-        
-        <div style="font-size:0.6rem; color:var(--subtext); text-align:center; padding: 4px 0; border-top:1px solid rgba(255,255,255,0.05); margin-top:8px;">
+
+        <div
+          style="font-size:0.6rem; color:var(--subtext); text-align:center; padding: 4px 0; border-top:1px solid rgba(255,255,255,0.05); margin-top:8px;">
           CRB jogou com vantagem em casa e abriu 2x0 no agregado.
         </div>
       </div>
@@ -368,16 +434,18 @@
       <!-- JOGO DE VOLTA (Final Match 2) -->
       <div class="final-match-card is-live" id="voltaCard">
         <div class="final-match-card__header" id="voltaHeader">🔴 AO VIVO – TRANSMISSÃO</div>
-        
+
         <div class="final-match-teams">
           <div class="final-team">
             <!-- Fortaleza SVG Logo -->
             <svg class="final-logo svg-logo" viewBox="0 0 100 100" width="100" height="100" style="display: block;">
-              <path d="M10 10 L90 10 C90 60 50 95 50 95 C50 95 10 60 10 10 Z" fill="#003087" stroke="#fff" stroke-width="3"/>
-              <path d="M10 38 L90 38 C90 60 50 95 50 95 C50 95 10 60 10 38 Z" fill="#C8102E"/>
-              <path d="M22 38 L22 80 C29 86 50 93 50 93 C50 93 71 86 78 80 L78 38 Z" fill="#fff"/>
-              <path d="M32 38 L32 83 C38 87 50 91 50 91 C50 91 62 87 68 83 L68 38 Z" fill="#C8102E"/>
-              <text x="50" y="28" font-family="'Orbitron', sans-serif" font-weight="900" font-size="16" fill="#fff" text-anchor="middle">FEC</text>
+              <path d="M10 10 L90 10 C90 60 50 95 50 95 C50 95 10 60 10 10 Z" fill="#003087" stroke="#fff"
+                stroke-width="3" />
+              <path d="M10 38 L90 38 C90 60 50 95 50 95 C50 95 10 60 10 38 Z" fill="#C8102E" />
+              <path d="M22 38 L22 80 C29 86 50 93 50 93 C50 93 71 86 78 80 L78 38 Z" fill="#fff" />
+              <path d="M32 38 L32 83 C38 87 50 91 50 91 C50 91 62 87 68 83 L68 38 Z" fill="#C8102E" />
+              <text x="50" y="28" font-family="'Orbitron', sans-serif" font-weight="900" font-size="16" fill="#fff"
+                text-anchor="middle">FEC</text>
             </svg>
             <span class="final-team-name">Fortaleza</span>
           </div>
@@ -389,12 +457,14 @@
           <div class="final-team">
             <!-- CRB SVG Logo -->
             <svg class="final-logo svg-logo" viewBox="0 0 100 100" width="100" height="100" style="display: block;">
-              <path d="M10 15 L90 15 L90 50 C90 75 50 95 50 95 C50 95 10 75 10 50 Z" fill="#fff" stroke="#C8102E" stroke-width="4"/>
-              <path d="M10 15 L90 15 L90 42 L10 42 Z" fill="#C8102E"/>
-              <text x="50" y="34" font-family="'Orbitron', sans-serif" font-weight="900" font-size="18" fill="#fff" text-anchor="middle">CRB</text>
-              <line x1="32" y1="50" x2="32" y2="84" stroke="#C8102E" stroke-width="7"/>
-              <line x1="50" y1="50" x2="50" y2="90" stroke="#C8102E" stroke-width="7"/>
-              <line x1="68" y1="50" x2="68" y2="84" stroke="#C8102E" stroke-width="7"/>
+              <path d="M10 15 L90 15 L90 50 C90 75 50 95 50 95 C50 95 10 75 10 50 Z" fill="#fff" stroke="#C8102E"
+                stroke-width="4" />
+              <path d="M10 15 L90 15 L90 42 L10 42 Z" fill="#C8102E" />
+              <text x="50" y="34" font-family="'Orbitron', sans-serif" font-weight="900" font-size="18" fill="#fff"
+                text-anchor="middle">CRB</text>
+              <line x1="32" y1="50" x2="32" y2="84" stroke="#C8102E" stroke-width="7" />
+              <line x1="50" y1="50" x2="50" y2="90" stroke="#C8102E" stroke-width="7" />
+              <line x1="68" y1="50" x2="68" y2="84" stroke="#C8102E" stroke-width="7" />
             </svg>
             <span class="final-team-name">CRB</span>
           </div>
@@ -405,7 +475,7 @@
           <div>📍 Arena Castelão, Fortaleza – CE</div>
           <div>📅 Data da Partida: 09 Junho 2026</div>
         </div>
-        
+
         <a href="copa-do-nordeste-final.html" class="watch-btn">📺 ASSISTIR TRANSMISSÃO AO VIVO</a>
       </div>
 
@@ -435,18 +505,18 @@
     const LEAGUE_ID = 612;
 
     // ── clocks ──────────────────────────────────────────────
-    const DAYS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-    const MONTHS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    function pad(n){return String(n).padStart(2,'0');}
-    function zoneDate(off){const n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*6e4+off*36e5);}
-    function updateClocks(){
-      const local=new Date(),b=zoneDate(-3);
+    const DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function zoneDate(off) { const n = new Date(); return new Date(n.getTime() + n.getTimezoneOffset() * 6e4 + off * 36e5); }
+    function updateClocks() {
+      const local = new Date(), b = zoneDate(-3);
       const lTime = document.getElementById('time-usa');
       const lDate = document.getElementById('date-usa');
-      if (lTime) lTime.textContent=`${pad(local.getHours())}:${pad(local.getMinutes())}:${pad(local.getSeconds())}`;
-      if (lDate) lDate.textContent=`${DAYS[local.getDay()]}, ${pad(local.getDate())} ${MONTHS[local.getMonth()]} ${local.getFullYear()}`;
-      document.getElementById('time-bra').textContent=`${pad(b.getHours())}:${pad(b.getMinutes())}:${pad(b.getSeconds())}`;
-      document.getElementById('date-bra').textContent=`${DAYS[b.getDay()]}, ${pad(b.getDate())} ${MONTHS[b.getMonth()]} ${b.getFullYear()}`;
+      if (lTime) lTime.textContent = `${pad(local.getHours())}:${pad(local.getMinutes())}:${pad(local.getSeconds())}`;
+      if (lDate) lDate.textContent = `${DAYS[local.getDay()]}, ${pad(local.getDate())} ${MONTHS[local.getMonth()]} ${local.getFullYear()}`;
+      document.getElementById('time-bra').textContent = `${pad(b.getHours())}:${pad(b.getMinutes())}:${pad(b.getSeconds())}`;
+      document.getElementById('date-bra').textContent = `${DAYS[b.getDay()]}, ${pad(b.getDate())} ${MONTHS[b.getMonth()]} ${b.getFullYear()}`;
     }
     updateClocks(); setInterval(updateClocks, 1000);
 
@@ -485,10 +555,10 @@
       try {
         const fixtures = await API.getFixtures();
         // Look for matches involving Fortaleza and CRB in Copa do Nordeste (LEAGUE_ID)
-        const matches = fixtures.filter(f => 
+        const matches = fixtures.filter(f =>
           f.league && f.league.externalId === LEAGUE_ID &&
           ((f.homeTeam && f.homeTeam.name.includes("Fortaleza") && f.awayTeam && f.awayTeam.name.includes("CRB")) ||
-           (f.homeTeam && f.homeTeam.name.includes("CRB") && f.awayTeam && f.awayTeam.name.includes("Fortaleza")))
+            (f.homeTeam && f.homeTeam.name.includes("CRB") && f.awayTeam && f.awayTeam.name.includes("Fortaleza")))
         );
 
         if (matches && matches.length) {
@@ -497,7 +567,7 @@
           if (game2) {
             const isLive = API.isLive(game2.statusShort);
             const isFinished = API.isFinished(game2.statusShort);
-            
+
             // Update scores
             if (game2.homeGoals !== null) document.getElementById('scoreHome').textContent = game2.homeGoals;
             if (game2.awayGoals !== null) document.getElementById('scoreAway').textContent = game2.awayGoals;
@@ -536,20 +606,22 @@
     setInterval(updateMatchData, CONFIG.REFRESH_INTERVAL);
 
     // particles
-    const cv=document.getElementById('particleCanvas'),ctx2=cv.getContext('2d');
-    let W2,H2,pts=[];
-    function resize(){W2=cv.width=window.innerWidth;H2=cv.height=window.innerHeight;}
-    function mkPt(){return{x:Math.random()*W2,y:H2+10,vx:(Math.random()-.5)*.4,vy:-(Math.random()*.5+.2),a:Math.random()*.35+.08,s:Math.random()*9+5,r:0,rs:(Math.random()-.5)*.02};}
-    function animPts(){
-      ctx2.clearRect(0,0,W2,H2);
-      if(pts.length<25)pts.push(mkPt());
-      pts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.r+=p.rs;p.a-=.0004;
-        ctx2.save();ctx2.globalAlpha=Math.max(0,p.a);ctx2.translate(p.x,p.y);ctx2.rotate(p.r);
-        ctx2.font=`${p.s}px serif`;ctx2.fillStyle='rgba(255,215,0,.5)';ctx2.fillText('⚽',0,0);
-        ctx2.restore();if(p.y<-20||p.a<=0)pts.splice(i,1);
-      });requestAnimationFrame(animPts);
+    const cv = document.getElementById('particleCanvas'), ctx2 = cv.getContext('2d');
+    let W2, H2, pts = [];
+    function resize() { W2 = cv.width = window.innerWidth; H2 = cv.height = window.innerHeight; }
+    function mkPt() { return { x: Math.random() * W2, y: H2 + 10, vx: (Math.random() - .5) * .4, vy: -(Math.random() * .5 + .2), a: Math.random() * .35 + .08, s: Math.random() * 9 + 5, r: 0, rs: (Math.random() - .5) * .02 }; }
+    function animPts() {
+      ctx2.clearRect(0, 0, W2, H2);
+      if (pts.length < 25) pts.push(mkPt());
+      pts.forEach((p, i) => {
+        p.x += p.vx; p.y += p.vy; p.r += p.rs; p.a -= .0004;
+        ctx2.save(); ctx2.globalAlpha = Math.max(0, p.a); ctx2.translate(p.x, p.y); ctx2.rotate(p.r);
+        ctx2.font = `${p.s}px serif`; ctx2.fillStyle = 'rgba(255,215,0,.5)'; ctx2.fillText('⚽', 0, 0);
+        ctx2.restore(); if (p.y < -20 || p.a <= 0) pts.splice(i, 1);
+      }); requestAnimationFrame(animPts);
     }
-    window.addEventListener('resize',resize);resize();animPts();
+    window.addEventListener('resize', resize); resize(); animPts();
   </script>
 </body>
+
 </html>

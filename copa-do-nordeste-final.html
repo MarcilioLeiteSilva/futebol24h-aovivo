@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Copa do Nordeste – Transmissão da Final</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
   <style>
     /* Estilos isolados para a página de transmissão */
     body.nordeste-final-page-body {
@@ -15,7 +18,7 @@
       display: flex;
       flex-direction: column;
     }
-    
+
     /* Center Score Banner in Header */
     .top-bar__center-score {
       position: absolute;
@@ -26,6 +29,7 @@
       align-items: center;
       z-index: 105;
     }
+
     .score-banner {
       background: rgba(0, 0, 0, 0.65);
       border: 1px solid rgba(255, 215, 0, 0.3);
@@ -37,6 +41,7 @@
       box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
       backdrop-filter: blur(8px);
     }
+
     .score-team {
       font-family: var(--font-head);
       font-size: 0.8rem;
@@ -44,6 +49,7 @@
       letter-spacing: 0.1em;
       color: #fff;
     }
+
     .score-digits {
       font-family: var(--font-head);
       font-size: 1.2rem;
@@ -51,11 +57,13 @@
       color: var(--gold);
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
     }
+
     .score-separator {
       color: #fff;
       font-weight: bold;
       opacity: 0.6;
     }
+
     .live-indicator-tag {
       font-family: var(--font-head);
       font-size: 0.55rem;
@@ -70,13 +78,14 @@
       gap: 4px;
       animation: livePulse 1.5s ease-in-out infinite;
     }
+
     .indicator-dot {
       width: 4px;
       height: 4px;
       border-radius: 50%;
       background: var(--red);
     }
-    
+
     /* Main Layout */
     .page-content-split {
       flex: 1;
@@ -87,7 +96,7 @@
       overflow: hidden;
       align-items: stretch;
     }
-    
+
     /* Left: Live Player */
     .player-column {
       display: flex;
@@ -95,6 +104,7 @@
       justify-content: center;
       height: 100%;
     }
+
     .player-container {
       background: #020812;
       border: 2px solid rgba(0, 155, 58, 0.3);
@@ -108,11 +118,12 @@
       flex-direction: column;
       justify-content: space-between;
     }
+
     .player-container:hover {
       border-color: rgba(0, 155, 58, 0.6);
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 0 0 35px rgba(0, 155, 58, 0.2);
     }
-    
+
     /* Video Poster Area */
     .video-poster {
       position: absolute;
@@ -125,6 +136,7 @@
       align-items: center;
       justify-content: center;
     }
+
     .play-btn-glow {
       width: 80px;
       height: 80px;
@@ -139,21 +151,25 @@
       transition: all 0.3s ease;
       z-index: 3;
     }
+
     .play-btn-glow:hover {
       transform: scale(1.1);
       background: #009b3a;
       box-shadow: 0 0 40px rgba(0, 155, 58, 0.9);
     }
+
     .play-icon-svg {
       width: 32px;
       height: 32px;
       fill: #fff;
       margin-left: 6px;
     }
+
     .live-stream-overlay-text {
       position: absolute;
       bottom: 24%;
-      left: 0; right: 0;
+      left: 0;
+      right: 0;
       text-align: center;
       color: #fff;
       font-family: var(--font-head);
@@ -161,9 +177,9 @@
       font-size: 0.95rem;
       letter-spacing: 0.1em;
       z-index: 2;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
     }
-    
+
     /* Player stream bars */
     .stream-status-bar {
       height: 36px;
@@ -179,11 +195,13 @@
       letter-spacing: 0.08em;
       color: var(--subtext);
     }
+
     .stream-info-left {
       display: flex;
       align-items: center;
       gap: 12px;
     }
+
     .stream-indicator-live {
       display: inline-flex;
       align-items: center;
@@ -191,7 +209,7 @@
       color: var(--red);
       font-weight: bold;
     }
-    
+
     /* Right Column: Carousel Card */
     .carousel-column {
       display: flex;
@@ -199,7 +217,7 @@
       justify-content: center;
       height: 100%;
     }
-    
+
     .carousel-card {
       background: linear-gradient(135deg, rgba(2, 8, 18, 0.85), rgba(6, 15, 30, 0.85));
       border: 1px solid rgba(255, 215, 0, 0.2);
@@ -214,7 +232,7 @@
       overflow: hidden;
       position: relative;
     }
-    
+
     /* Carousel Navigation */
     .carousel-nav-arrows {
       position: absolute;
@@ -224,6 +242,7 @@
       gap: 6px;
       z-index: 5;
     }
+
     .arrow-btn {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 215, 0, 0.2);
@@ -238,11 +257,12 @@
       font-size: 0.7rem;
       transition: all 0.2s;
     }
+
     .arrow-btn:hover {
       background: rgba(255, 215, 0, 0.15);
       border-color: var(--gold);
     }
-    
+
     /* Tab Headers */
     .tabs-header {
       display: flex;
@@ -251,6 +271,7 @@
       padding-bottom: 8px;
       margin-bottom: 12px;
     }
+
     .tab-btn {
       background: none;
       border: none;
@@ -264,25 +285,29 @@
       transition: all 0.3s;
       position: relative;
     }
+
     .tab-btn.active {
       color: var(--gold);
     }
+
     .tab-btn.active::after {
       content: '';
       position: absolute;
       bottom: -9px;
-      left: 0; right: 0;
+      left: 0;
+      right: 0;
       height: 2px;
       background: var(--gold);
       box-shadow: 0 0 10px var(--gold);
     }
-    
+
     /* Carousel Container */
     .carousel-wrapper {
       flex: 1;
       position: relative;
       overflow: hidden;
     }
+
     .carousel-slide {
       position: absolute;
       inset: 0;
@@ -294,60 +319,67 @@
       justify-content: flex-start;
       overflow-y: auto;
       scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,0.1) transparent;
+      scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
       padding-right: 4px;
     }
+
     .carousel-slide.active {
       opacity: 1;
       visibility: visible;
       z-index: 2;
     }
-    
+
     /* Slide 1: Lineup details */
     .lineup-split {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
     }
+
     .lineup-title {
       font-family: var(--font-head);
       font-size: 0.65rem;
       color: var(--gold);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       padding-bottom: 4px;
       margin-bottom: 6px;
       letter-spacing: 0.05em;
     }
+
     .lineup-list {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
+
     .lineup-item {
       display: flex;
       justify-content: space-between;
       font-size: 0.72rem;
       color: var(--text);
     }
+
     .lineup-num {
       color: var(--subtext);
       font-family: var(--font-head);
       font-weight: bold;
       width: 18px;
     }
+
     .lineup-name {
       flex: 1;
       text-align: left;
     }
+
     .coach-row {
       margin-top: 8px;
       font-size: 0.7rem;
       color: var(--subtext);
-      border-top: 1px dashed rgba(255,255,255,0.05);
+      border-top: 1px dashed rgba(255, 255, 255, 0.05);
       padding-top: 4px;
     }
-    
+
     /* Slide 2: Stats details */
     .stats-container {
       display: flex;
@@ -355,11 +387,13 @@
       gap: 12px;
       padding: 4px 0;
     }
+
     .stat-row {
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
+
     .stat-labels {
       display: flex;
       justify-content: space-between;
@@ -367,58 +401,71 @@
       font-family: var(--font-head);
       color: #fff;
     }
+
     .stat-name {
       color: var(--gold);
       font-weight: bold;
       font-size: 0.65rem;
       letter-spacing: 0.05em;
     }
+
     .bar-outer {
       height: 6px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       border-radius: 3px;
       display: flex;
       overflow: hidden;
     }
+
     .bar-left {
       height: 100%;
-      background: #003087; /* Fortaleza Blue */
+      background: #003087;
+      /* Fortaleza Blue */
       border-radius: 3px 0 0 3px;
     }
+
     .bar-right {
       height: 100%;
-      background: #C8102E; /* CRB Red */
+      background: #C8102E;
+      /* CRB Red */
       border-radius: 0 3px 3px 0;
     }
-    
+
     /* Slide 3: Tactical field layout */
     .tactical-field {
       width: 100%;
       height: 100%;
       min-height: 280px;
       background: radial-gradient(circle, rgba(0, 155, 58, 0.15) 0%, rgba(2, 8, 18, 0.4) 100%),
-                  repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.01) 40px, rgba(255,255,255,0.01) 80px);
+        repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255, 255, 255, 0.01) 40px, rgba(255, 255, 255, 0.01) 80px);
       border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: 12px;
       position: relative;
       overflow: hidden;
     }
+
     .tactical-field::before {
       content: '';
       position: absolute;
-      left: 50%; top: 0; bottom: 0;
+      left: 50%;
+      top: 0;
+      bottom: 0;
       width: 1px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
     }
+
     .tactical-field::after {
       content: '';
       position: absolute;
-      left: 50%; top: 50%;
+      left: 50%;
+      top: 50%;
       transform: translate(-50%, -50%);
-      width: 60px; height: 60px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
+
     .tactical-player {
       position: absolute;
       width: 20px;
@@ -432,20 +479,79 @@
       align-items: center;
       justify-content: center;
       transform: translate(-50%, -50%);
-      box-shadow: 0 0 6px rgba(255,255,255,0.4);
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
     }
+
     .tactical-player.team-home {
       background: #003087;
       border: 1px solid #fff;
     }
+
     .tactical-player.team-away {
       background: #C8102E;
       border: 1px solid #fff;
     }
-    
 
+    /* Timeline / Events Styles */
+    .timeline-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 4px 8px;
+    }
+    .timeline-event {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      position: relative;
+      padding-bottom: 12px;
+    }
+    .timeline-event:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 41px;
+      top: 24px;
+      bottom: 0;
+      width: 2px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .timeline-time {
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--gold);
+      width: 30px;
+      text-align: right;
+      padding-top: 3px;
+    }
+    .timeline-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      z-index: 2;
+    }
+    .timeline-content {
+      flex: 1;
+    }
+    .timeline-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .timeline-desc {
+      font-size: 0.65rem;
+      color: var(--subtext);
+      margin-top: 2px;
+    }
   </style>
 </head>
+
 <body class="nordeste-final-page-body">
   <canvas id="particleCanvas"></canvas>
   <div class="scanlines"></div>
@@ -466,22 +572,26 @@
       <div class="score-banner">
         <span class="score-team">FOR</span>
         <!-- Fortaleza SVG Logo -->
-        <svg class="score-svg" viewBox="0 0 100 100" width="22" height="22" style="display: inline-block; vertical-align: middle; margin: 0 4px;">
-          <path d="M10 10 L90 10 C90 60 50 95 50 95 C50 95 10 60 10 10 Z" fill="#003087" stroke="#fff" stroke-width="4"/>
-          <path d="M10 38 L90 38 C90 60 50 95 50 95 C50 95 10 60 10 38 Z" fill="#C8102E"/>
-          <path d="M22 38 L22 80 C29 86 50 93 50 93 C50 93 71 86 78 80 L78 38 Z" fill="#fff"/>
-          <path d="M32 38 L32 83 C38 87 50 91 50 91 C50 91 62 87 68 83 L68 38 Z" fill="#C8102E"/>
+        <svg class="score-svg" viewBox="0 0 100 100" width="22" height="22"
+          style="display: inline-block; vertical-align: middle; margin: 0 4px;">
+          <path d="M10 10 L90 10 C90 60 50 95 50 95 C50 95 10 60 10 10 Z" fill="#003087" stroke="#fff"
+            stroke-width="4" />
+          <path d="M10 38 L90 38 C90 60 50 95 50 95 C50 95 10 60 10 38 Z" fill="#C8102E" />
+          <path d="M22 38 L22 80 C29 86 50 93 50 93 C50 93 71 86 78 80 L78 38 Z" fill="#fff" />
+          <path d="M32 38 L32 83 C38 87 50 91 50 91 C50 91 62 87 68 83 L68 38 Z" fill="#C8102E" />
         </svg>
         <span class="score-digits" id="liveScoreHome">0</span>
         <span class="score-separator">:</span>
         <span class="score-digits" id="liveScoreAway">0</span>
         <!-- CRB SVG Logo -->
-        <svg class="score-svg" viewBox="0 0 100 100" width="22" height="22" style="display: inline-block; vertical-align: middle; margin: 0 4px;">
-          <path d="M10 15 L90 15 L90 50 C90 75 50 95 50 95 C50 95 10 75 10 50 Z" fill="#fff" stroke="#C8102E" stroke-width="5"/>
-          <path d="M10 15 L90 15 L90 42 L10 42 Z" fill="#C8102E"/>
-          <line x1="32" y1="50" x2="32" y2="84" stroke="#C8102E" stroke-width="7"/>
-          <line x1="50" y1="50" x2="50" y2="90" stroke="#C8102E" stroke-width="7"/>
-          <line x1="68" y1="50" x2="68" y2="84" stroke="#C8102E" stroke-width="7"/>
+        <svg class="score-svg" viewBox="0 0 100 100" width="22" height="22"
+          style="display: inline-block; vertical-align: middle; margin: 0 4px;">
+          <path d="M10 15 L90 15 L90 50 C90 75 50 95 50 95 C50 95 10 75 10 50 Z" fill="#fff" stroke="#C8102E"
+            stroke-width="5" />
+          <path d="M10 15 L90 15 L90 42 L10 42 Z" fill="#C8102E" />
+          <line x1="32" y1="50" x2="32" y2="84" stroke="#C8102E" stroke-width="7" />
+          <line x1="50" y1="50" x2="50" y2="90" stroke="#C8102E" stroke-width="7" />
+          <line x1="68" y1="50" x2="68" y2="84" stroke="#C8102E" stroke-width="7" />
         </svg>
         <span class="score-team">CRB</span>
         <span class="live-indicator-tag" id="liveIndicator"><span class="indicator-dot"></span> AGUARDANDO</span>
@@ -510,16 +620,16 @@
 
   <!-- ===== PAGE WRAP DUAL VIEWPORTS ===== -->
   <div class="page-content-split">
-    
+
     <!-- LEFT COLUMN: LIVE VIDEO STREAM CONTAINER -->
     <div class="player-column">
       <div class="player-container">
-        
+
         <!-- Video screen poster -->
         <div class="video-poster">
           <div class="play-btn-glow" onclick="alert('Transmissão ao vivo iniciada!')">
             <svg class="play-icon-svg" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z"/>
+              <path d="M8 5v14l11-7z" />
             </svg>
           </div>
           <div class="live-stream-overlay-text">COPA DO NORDESTE – A GRANDE FINAL AO VIVO</div>
@@ -543,7 +653,7 @@
     <!-- RIGHT COLUMN: INTERACTIVE TABS & CAROUSEL CARD -->
     <div class="carousel-column">
       <div class="carousel-card">
-        
+
         <!-- Arrows carousel nav -->
         <div class="carousel-nav-arrows">
           <button class="arrow-btn" onclick="prevSlide()" title="Anterior">◀</button>
@@ -555,11 +665,12 @@
           <button class="tab-btn active" id="tab0" onclick="showSlide(0)">ESCALAÇÃO</button>
           <button class="tab-btn" id="tab1" onclick="showSlide(1)">ESTATÍSTICAS</button>
           <button class="tab-btn" id="tab2" onclick="showSlide(2)">CAMPO TÁTICO</button>
+          <button class="tab-btn" id="tab3" onclick="showSlide(3)">DADOS DA PARTIDA</button>
         </div>
 
         <!-- Slide Wrapper -->
         <div class="carousel-wrapper">
-          
+
           <!-- Slide 1: Lineup lists -->
           <div class="carousel-slide active" id="slide0">
             <div class="lineup-split">
@@ -567,42 +678,56 @@
               <div>
                 <div class="lineup-title">🦁 FORTALEZA</div>
                 <ul class="lineup-list">
-                  <li class="lineup-item"><span class="lineup-num">1</span><span class="lineup-name">João Ricardo</span></li>
-                  <li class="lineup-item"><span class="lineup-num">2</span><span class="lineup-name">Tinga (C)</span></li>
+                  <li class="lineup-item"><span class="lineup-num">1</span><span class="lineup-name">João Ricardo</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">2</span><span class="lineup-name">Tinga (C)</span>
+                  </li>
                   <li class="lineup-item"><span class="lineup-num">3</span><span class="lineup-name">Brítez</span></li>
                   <li class="lineup-item"><span class="lineup-num">4</span><span class="lineup-name">Titi</span></li>
-                  <li class="lineup-item"><span class="lineup-num">6</span><span class="lineup-name">F. Jonatan</span></li>
-                  <li class="lineup-item"><span class="lineup-num">5</span><span class="lineup-name">Lucas Sasha</span></li>
-                  <li class="lineup-item"><span class="lineup-num">8</span><span class="lineup-name">Hércules</span></li>
-                  <li class="lineup-item"><span class="lineup-num">10</span><span class="lineup-name">Pochettino</span></li>
-                  <li class="lineup-item"><span class="lineup-num">22</span><span class="lineup-name">Y. Pikachu</span></li>
+                  <li class="lineup-item"><span class="lineup-num">6</span><span class="lineup-name">F. Jonatan</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">5</span><span class="lineup-name">Lucas Sasha</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">8</span><span class="lineup-name">Hércules</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">10</span><span class="lineup-name">Pochettino</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">22</span><span class="lineup-name">Y. Pikachu</span>
+                  </li>
                   <li class="lineup-item"><span class="lineup-num">9</span><span class="lineup-name">Lucero</span></li>
                   <li class="lineup-item"><span class="lineup-num">11</span><span class="lineup-name">Moisés</span></li>
                 </ul>
                 <div class="coach-row">Téc: J. P. Vojvoda</div>
               </div>
-              
+
               <!-- CRB -->
               <div>
                 <div class="lineup-title">🔴 CRB</div>
                 <ul class="lineup-list">
-                  <li class="lineup-item"><span class="lineup-num">12</span><span class="lineup-name">M. Albino</span></li>
+                  <li class="lineup-item"><span class="lineup-num">12</span><span class="lineup-name">M. Albino</span>
+                  </li>
                   <li class="lineup-item"><span class="lineup-num">2</span><span class="lineup-name">Hereda</span></li>
-                  <li class="lineup-item"><span class="lineup-num">3</span><span class="lineup-name">F. Alemão</span></li>
-                  <li class="lineup-item"><span class="lineup-num">4</span><span class="lineup-name">G. Henrique</span></li>
-                  <li class="lineup-item"><span class="lineup-num">6</span><span class="lineup-name">M. Ribeiro</span></li>
+                  <li class="lineup-item"><span class="lineup-num">3</span><span class="lineup-name">F. Alemão</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">4</span><span class="lineup-name">G. Henrique</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">6</span><span class="lineup-name">M. Ribeiro</span>
+                  </li>
                   <li class="lineup-item"><span class="lineup-num">5</span><span class="lineup-name">Falcão</span></li>
-                  <li class="lineup-item"><span class="lineup-num">8</span><span class="lineup-name">João Pedro</span></li>
+                  <li class="lineup-item"><span class="lineup-num">8</span><span class="lineup-name">João Pedro</span>
+                  </li>
                   <li class="lineup-item"><span class="lineup-num">10</span><span class="lineup-name">Gegê</span></li>
                   <li class="lineup-item"><span class="lineup-num">11</span><span class="lineup-name">Mike</span></li>
-                  <li class="lineup-item"><span class="lineup-num">9</span><span class="lineup-name">A. Ramon (C)</span></li>
-                  <li class="lineup-item"><span class="lineup-num">7</span><span class="lineup-name">Léo Pereira</span></li>
+                  <li class="lineup-item"><span class="lineup-num">9</span><span class="lineup-name">A. Ramon (C)</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">7</span><span class="lineup-name">Léo Pereira</span>
+                  </li>
                 </ul>
                 <div class="coach-row">Téc: D. Paulista</div>
               </div>
             </div>
           </div>
-          
+
           <!-- Slide 2: Comparative Stats sliders -->
           <div class="carousel-slide" id="slide1">
             <div class="stats-container">
@@ -672,7 +797,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Slide 3: Tactical field blueprint -->
           <div class="carousel-slide" id="slide2">
             <div class="tactical-field">
@@ -704,6 +829,56 @@
             </div>
           </div>
 
+          <!-- Slide 4: Timeline events / Dados da partida -->
+          <div class="carousel-slide" id="slide3">
+            <div class="timeline-container">
+              <div class="timeline-event">
+                <span class="timeline-time">10'</span>
+                <span class="timeline-badge" style="background: rgba(255,215,0,0.15);">⚽</span>
+                <div class="timeline-content">
+                  <div class="timeline-title">GOL DO CRB! (1 - 0)</div>
+                  <div class="timeline-desc">Anselmo Ramon cobra pênalti com categoria no canto esquerdo de João Ricardo.</div>
+                </div>
+              </div>
+              
+              <div class="timeline-event">
+                <span class="timeline-time">28'</span>
+                <span class="timeline-badge" style="background: rgba(255,193,7,0.2);">🟨</span>
+                <div class="timeline-content">
+                  <div class="timeline-title">CARTÃO AMARELO (Fortaleza)</div>
+                  <div class="timeline-desc">Brítez recebe cartão amarelo por falta dura em Léo Pereira no meio de campo.</div>
+                </div>
+              </div>
+
+              <div class="timeline-event">
+                <span class="timeline-time">35'</span>
+                <span class="timeline-badge" style="background: rgba(255,215,0,0.15);">⚽</span>
+                <div class="timeline-content">
+                  <div class="timeline-title">GOL DO CRB! (2 - 0)</div>
+                  <div class="timeline-desc">Léo Pereira aproveita rebote rápido na grande área e finaliza rasteiro sem chances.</div>
+                </div>
+              </div>
+
+              <div class="timeline-event">
+                <span class="timeline-time">45'</span>
+                <span class="timeline-badge" style="background: rgba(0,123,255,0.2);">🔄</span>
+                <div class="timeline-content">
+                  <div class="timeline-title">SUBSTITUIÇÃO (Fortaleza)</div>
+                  <div class="timeline-desc">Sai: Hércules (8) | Entra: Calebe (10) para reforçar a criação ofensiva.</div>
+                </div>
+              </div>
+
+              <div class="timeline-event">
+                <span class="timeline-time">55'</span>
+                <span class="timeline-badge" style="background: rgba(220,53,69,0.25);">🟥</span>
+                <div class="timeline-content">
+                  <div class="timeline-title">CARTÃO VERMELHO! (CRB)</div>
+                  <div class="timeline-desc">Gustavo Henrique é expulso direto após carrinho violento em Pochettino. CRB com 10!</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -720,28 +895,29 @@
   <script src="api.js"></script>
   <script>
     // ── clocks ──────────────────────────────────────────────
-    const DAYS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-    const MONTHS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    function pad(n){return String(n).padStart(2,'0');}
-    function zoneDate(off){const n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*6e4+off*36e5);}
-    function updateClocks(){
-      const local=new Date(),b=zoneDate(-3);
+    const DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function zoneDate(off) { const n = new Date(); return new Date(n.getTime() + n.getTimezoneOffset() * 6e4 + off * 36e5); }
+    function updateClocks() {
+      const local = new Date(), b = zoneDate(-3);
       const lTime = document.getElementById('time-usa');
       const lDate = document.getElementById('date-usa');
-      if (lTime) lTime.textContent=`${pad(local.getHours())}:${pad(local.getMinutes())}:${pad(local.getSeconds())}`;
-      if (lDate) lDate.textContent=`${DAYS[local.getDay()]}, ${pad(local.getDate())} ${MONTHS[local.getMonth()]} ${local.getFullYear()}`;
-      document.getElementById('time-bra').textContent=`${pad(b.getHours())}:${pad(b.getMinutes())}:${pad(b.getSeconds())}`;
-      document.getElementById('date-bra').textContent=`${DAYS[b.getDay()]}, ${pad(b.getDate())} ${MONTHS[b.getMonth()]} ${b.getFullYear()}`;
+      if (lTime) lTime.textContent = `${pad(local.getHours())}:${pad(local.getMinutes())}:${pad(local.getSeconds())}`;
+      if (lDate) lDate.textContent = `${DAYS[local.getDay()]}, ${pad(local.getDate())} ${MONTHS[local.getMonth()]} ${local.getFullYear()}`;
+      document.getElementById('time-bra').textContent = `${pad(b.getHours())}:${pad(b.getMinutes())}:${pad(b.getSeconds())}`;
+      document.getElementById('date-bra').textContent = `${DAYS[b.getDay()]}, ${pad(b.getDate())} ${MONTHS[b.getMonth()]} ${b.getFullYear()}`;
     }
     updateClocks(); setInterval(updateClocks, 1000);
 
     // ── carousel slide logic ────────────────────────────────
     let currentSlide = 0;
-    const slidesCount = 3;
+    const slidesCount = 4;
+    let autoPlayInterval = null;
 
     function showSlide(index) {
       currentSlide = (index + slidesCount) % slidesCount;
-      
+
       // Update slides
       for (let i = 0; i < slidesCount; i++) {
         const slide = document.getElementById(`slide${i}`);
@@ -755,16 +931,35 @@
         }
       }
     }
-    
+
     function nextSlide() { showSlide(currentSlide + 1); }
     function prevSlide() { showSlide(currentSlide - 1); }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      autoPlayInterval = setInterval(nextSlide, 10000); // 10s auto-rotate
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayInterval) clearInterval(autoPlayInterval);
+    }
+
+    // Wrap showSlide to reset autoplay timer on click
+    const originalShowSlide = showSlide;
+    showSlide = function(index) {
+      originalShowSlide(index);
+      startAutoPlay(); // reset 10s timer
+    };
+
+    // Start auto rotation initially
+    startAutoPlay();
 
     // ── dynamic API match updater ────────────────────────────
     const LEAGUE_ID = 612;
     async function updateMatchData() {
       try {
         const fixtures = await API.getFixtures();
-        const matches = fixtures.filter(f => 
+        const matches = fixtures.filter(f =>
           f.league && f.league.externalId === LEAGUE_ID &&
           f.homeTeam && f.homeTeam.name.includes("Fortaleza") && f.awayTeam && f.awayTeam.name.includes("CRB")
         );
@@ -773,7 +968,7 @@
           const game2 = matches[0];
           const isLive = API.isLive(game2.statusShort);
           const isFinished = API.isFinished(game2.statusShort);
-          
+
           // Update scores in center score banner
           if (game2.homeGoals !== null) document.getElementById('liveScoreHome').textContent = game2.homeGoals;
           if (game2.awayGoals !== null) document.getElementById('liveScoreAway').textContent = game2.awayGoals;
@@ -810,20 +1005,22 @@
     setInterval(updateMatchData, CONFIG.REFRESH_INTERVAL);
 
     // particles
-    const cv=document.getElementById('particleCanvas'),ctx2=cv.getContext('2d');
-    let W2,H2,pts=[];
-    function resize(){W2=cv.width=window.innerWidth;H2=cv.height=window.innerHeight;}
-    function mkPt(){return{x:Math.random()*W2,y:H2+10,vx:(Math.random()-.5)*.4,vy:-(Math.random()*.5+.2),a:Math.random()*.35+.08,s:Math.random()*9+5,r:0,rs:(Math.random()-.5)*.02};}
-    function animPts(){
-      ctx2.clearRect(0,0,W2,H2);
-      if(pts.length<20)pts.push(mkPt());
-      pts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.r+=p.rs;p.a-=.0004;
-        ctx2.save();ctx2.globalAlpha=Math.max(0,p.a);ctx2.translate(p.x,p.y);ctx2.rotate(p.r);
-        ctx2.font=`${p.s}px serif`;ctx2.fillStyle='rgba(255,215,0,.5)';ctx2.fillText('⚽',0,0);
-        ctx2.restore();if(p.y<-20||p.a<=0)pts.splice(i,1);
-      });requestAnimationFrame(animPts);
+    const cv = document.getElementById('particleCanvas'), ctx2 = cv.getContext('2d');
+    let W2, H2, pts = [];
+    function resize() { W2 = cv.width = window.innerWidth; H2 = cv.height = window.innerHeight; }
+    function mkPt() { return { x: Math.random() * W2, y: H2 + 10, vx: (Math.random() - .5) * .4, vy: -(Math.random() * .5 + .2), a: Math.random() * .35 + .08, s: Math.random() * 9 + 5, r: 0, rs: (Math.random() - .5) * .02 }; }
+    function animPts() {
+      ctx2.clearRect(0, 0, W2, H2);
+      if (pts.length < 20) pts.push(mkPt());
+      pts.forEach((p, i) => {
+        p.x += p.vx; p.y += p.vy; p.r += p.rs; p.a -= .0004;
+        ctx2.save(); ctx2.globalAlpha = Math.max(0, p.a); ctx2.translate(p.x, p.y); ctx2.rotate(p.r);
+        ctx2.font = `${p.s}px serif`; ctx2.fillStyle = 'rgba(255,215,0,.5)'; ctx2.fillText('⚽', 0, 0);
+        ctx2.restore(); if (p.y < -20 || p.a <= 0) pts.splice(i, 1);
+      }); requestAnimationFrame(animPts);
     }
-    window.addEventListener('resize',resize);resize();animPts();
+    window.addEventListener('resize', resize); resize(); animPts();
   </script>
 </body>
+
 </html>
