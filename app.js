@@ -1,17 +1,14 @@
 /* ============================================================
-   COPA DO MUNDO 2026 – APP.JS
-   Dual clocks, countdown, particles, groups data
+   FUTEBOL BRASILEIRO 24H – APP.JS
+   Clocks, particles, and leagues navigation cards
    ============================================================ */
-
-// ── DYNAMIC TARGET MATCH DATE ──────────────────────────────
-let targetMatchDate = null;
 
 // ── LEAGUES/COMPETITIONS DATA ──────────────────────────────
 const CAMPEONATOS = [
-  { name: 'Série A', logo: '🏆', desc: 'Primeira divisão do Campeonato Brasileiro com os 20 principais clubes do país.' },
-  { name: 'Série B', logo: '🥈', desc: 'Segunda divisão nacional disputada em pontos corridos rumo ao acesso à elite.' },
-  { name: 'Copa do Brasil', logo: '🇧🇷', desc: 'O torneio mais democrático do país reunindo clubes de todos os estados.' },
-  { name: 'Copa do Nordeste', logo: '☀️', desc: 'A maior copa regional do país com os gigantes e rivalidades do Nordeste.' }
+  { name: 'Série A', logo: '🏆', link: 'brasileirao-serie-a.html', desc: 'Primeira divisão do Campeonato Brasileiro com os 20 principais clubes do país.' },
+  { name: 'Série B', logo: '🥈', link: 'brasileirao-serie-b.html', desc: 'Segunda divisão nacional disputada em pontos corridos rumo ao acesso à elite.' },
+  { name: 'Copa do Brasil', logo: '🇧🇷', link: 'copa-do-brasil.html', desc: 'O torneio mais democrático do país reunindo clubes de todos os estados.' },
+  { name: 'Copa do Nordeste', logo: '☀️', link: 'copa-do-nordeste.html', desc: 'A maior copa regional do país com os gigantes e rivalidades do Nordeste.' }
 ];
 
 // ── PARTICLE SYSTEM ────────────────────────────────────────
@@ -96,14 +93,14 @@ function getTimeInZone(offsetHours) {
 
 // ── UPDATE CLOCKS ──────────────────────────────────────────
 function updateClocks() {
-  // Local time of viewer
+  // Local Time
   const local = new Date();
   const localTimeEl = document.getElementById('time-local');
   const localDateEl = document.getElementById('date-local');
   if (localTimeEl) localTimeEl.textContent = formatTime(local);
   if (localDateEl) localDateEl.textContent = formatDate(local);
 
-  // Brazil: BRT = UTC-3
+  // Brazil Time: BRT = UTC-3
   const bra = getTimeInZone(-3);
   const braTimeEl = document.getElementById('time-bra');
   const braDateEl = document.getElementById('date-bra');
@@ -111,84 +108,18 @@ function updateClocks() {
   if (braDateEl) braDateEl.textContent = formatDate(bra);
 }
 
-// ── COUNTDOWN ─────────────────────────────────────────────
-const prevValues = { days: null, hours: null, minutes: null, seconds: null };
-
-function animateFlip(el) {
-  el.classList.add('flip');
-  setTimeout(() => el.classList.remove('flip'), 200);
-}
-
-// ── LOAD NEXT MATCH FOR COUNTDOWN ─────────────────────────
-async function loadNextMatchForCountdown() {
-  try {
-    const upcoming = await API.getUpcomingFixtures(1);
-    if (upcoming && upcoming.length) {
-      const next = upcoming[0];
-      targetMatchDate = new Date(next.date);
-      const eventText = document.getElementById('cd-event-text');
-      if (eventText) {
-        eventText.textContent = `${next.homeTeam.name} vs ${next.awayTeam.name} · ${API.toDisplayDate(next.date)} · ${API.toBrazilTime(next.date)} BRT`;
-      }
-    } else {
-      const eventText = document.getElementById('cd-event-text');
-      if (eventText) eventText.textContent = "Nenhum jogo agendado no momento.";
-    }
-  } catch (e) {
-    console.warn("Error loading next match for countdown:", e);
-  }
-}
-
-function updateCountdown() {
-  if (!targetMatchDate) {
-    const daysEl = document.getElementById('cd-days');
-    const hoursEl = document.getElementById('cd-hours');
-    const minutesEl = document.getElementById('cd-minutes');
-    const secondsEl = document.getElementById('cd-seconds');
-    if (daysEl) daysEl.textContent = '--';
-    if (hoursEl) hoursEl.textContent = '--';
-    if (minutesEl) minutesEl.textContent = '--';
-    if (secondsEl) secondsEl.textContent = '--';
-    return;
-  }
-  const now  = new Date();
-  const diff = targetMatchDate - now;
-
-  if (diff <= 0) {
-    document.getElementById('cd-days').textContent    = '00';
-    document.getElementById('cd-hours').textContent   = '00';
-    document.getElementById('cd-minutes').textContent = '00';
-    document.getElementById('cd-seconds').textContent = '00';
-    const label = document.getElementById('cd-label');
-    if (label) label.textContent = '⚽ JOGO EM ANDAMENTO / RECENTE!';
-    return;
-  }
-
-  const days    = Math.floor(diff / 86_400_000);
-  const hours   = Math.floor((diff % 86_400_000) / 3_600_000);
-  const minutes = Math.floor((diff % 3_600_000)  / 60_000);
-  const seconds = Math.floor((diff % 60_000)      / 1_000);
-
-  const ids = { days, hours, minutes, seconds };
-
-  Object.entries(ids).forEach(([key, val]) => {
-    const el = document.getElementById(`cd-${key}`);
-    if (el && prevValues[key] !== val) {
-      animateFlip(el);
-      el.textContent = pad(val);
-      prevValues[key] = val;
-    }
-  });
-}
-
-// ── BUILD LEAGUES ──────────────────────────────────────────
+// ── BUILD LEAGUES CARDS ────────────────────────────────────
 function buildLeagues() {
   const container = document.getElementById('groups-grid');
   if (!container) return;
   container.innerHTML = '';
+
   CAMPEONATOS.forEach(comp => {
-    const card = document.createElement('div');
+    const card = document.createElement('a');
+    card.href = comp.link;
     card.className = 'group-card';
+    card.style.textDecoration = 'none';
+    card.style.display = 'block';
 
     const header = document.createElement('div');
     header.className = 'group-card__header';
@@ -200,12 +131,13 @@ function buildLeagues() {
 
     const bodyDiv = document.createElement('div');
     bodyDiv.className = 'group-card__teams';
-    bodyDiv.style.padding = '16px';
-    bodyDiv.style.fontSize = '0.78rem';
+    bodyDiv.style.padding = '12px';
+    bodyDiv.style.fontSize = '0.75rem';
     bodyDiv.style.lineHeight = '1.4';
     bodyDiv.style.color = 'var(--subtext)';
     bodyDiv.textContent = comp.desc;
     card.appendChild(bodyDiv);
+
     container.appendChild(card);
   });
 }
@@ -243,13 +175,5 @@ async function setupTicker() {
 buildLeagues();
 setupTicker();
 updateClocks();
-loadNextMatchForCountdown();
-updateCountdown();
 
-setInterval(() => {
-  updateClocks();
-  updateCountdown();
-}, 1000);
-
-// Periodically reload next match for countdown every 5 mins
-setInterval(loadNextMatchForCountdown, 300000);
+setInterval(updateClocks, 1000);

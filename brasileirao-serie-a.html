@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brasileirão Série A – Cobertura 24h</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* Custom spacing adjustments for split layout */
+    .fixtures-wrap { padding: 0; max-width: 100%; width: 100%; }
+    .fixture-card { padding: 12px 16px; }
+    .group-block { border-radius: 16px; }
+    .standings-table td { padding: 8px; }
+    .page-title { text-align: center; padding: 24px 24px 12px; }
+    .page-title h1 { font-family: var(--font-disp); font-size: clamp(2rem, 4vw, 3rem); letter-spacing: 0.1em; color: var(--gold); margin: 0 0 4px; text-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+    .page-title p { font-size: 0.7rem; letter-spacing: 0.25em; color: var(--subtext); }
+  </style>
+</head>
+<body>
+  <canvas id="particleCanvas"></canvas>
+  <div class="scanlines"></div>
+
+  <!-- ===== TOP BAR ===== -->
+  <header class="top-bar">
+    <div class="top-bar__left">
+      <a href="index.html" class="back-btn">⬅ VOLTAR</a>
+      <div class="fifa-badge" style="border-color: #009b3a;">
+        <span class="fifa-badge__top" style="color: #ffdf00;">SÉRIE A</span>
+        <span class="fifa-badge__mid">⚽</span>
+        <span class="fifa-badge__bot" style="color: #fff;">LIVE</span>
+      </div>
+    </div>
+    <div class="clocks-panel">
+      <div class="clock-card"><span class="clock-card__flag">🌎</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">SEU HORÁRIO</span>
+          <span class="clock-card__time" id="time-usa">--:--:--</span>
+          <span class="clock-card__date" id="date-usa">-- --- ----</span>
+        </div>
+      </div>
+      <div class="clock-divider"></div>
+      <div class="clock-card"><span class="clock-card__flag">🇧🇷</span>
+        <div class="clock-card__info">
+          <span class="clock-card__label">BRASÍLIA / BRT</span>
+          <span class="clock-card__time" id="time-bra">--:--:--</span>
+          <span class="clock-card__date" id="date-bra">-- --- ----</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-wrap">
+    <div class="page-title">
+      <h1>🏆 BRASILEIRÃO SÉRIE A</h1>
+      <p>TABELA DE CLASSIFICAÇÃO E PRÓXIMOS JOGOS EM TEMPO REAL</p>
+    </div>
+
+    <!-- ===== SPLIT LEAGUE GRID ===== -->
+    <div class="league-grid">
+      
+      <!-- Left Column: Fixtures (Agenda) -->
+      <div class="fixtures-column">
+        <h2 style="font-family: var(--font-disp); font-size: 1.6rem; color: var(--gold); margin-bottom: 12px; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,215,0,0.2); padding-bottom: 8px;">📅 AGENDA DE JOGOS</h2>
+        <div class="date-nav" id="dateNav" style="padding: 0 0 16px; justify-content: flex-start;"></div>
+        <div class="fixtures-wrap">
+          <div class="loading-state" id="fixturesList">
+            <div class="spinner"></div>
+            <span>Carregando agenda...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Standings (Tabela) -->
+      <div class="standings-column">
+        <h2 style="font-family: var(--font-disp); font-size: 1.6rem; color: var(--gold); margin-bottom: 12px; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,215,0,0.2); padding-bottom: 8px;">📊 CLASSIFICAÇÃO</h2>
+        <div id="standingsContainer">
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <span>Carregando classificação...</span>
+          </div>
+        </div>
+        
+        <div class="legend" id="legendContainer" style="margin-top: 16px; justify-content: flex-start; gap: 16px;">
+          <div class="legend-item"><div class="legend-dot" style="background:#00C851;"></div><span>Acesso / Libertadores (G-4)</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#C8102E;"></div><span>Rebaixamento (Z-4)</span></div>
+        </div>
+        <div id="lastUpdated" style="font-size: 0.6rem; color: var(--subtext); margin-top: 12px; text-align: left; letter-spacing: 0.05em;"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span>© 2026 Brasileirão Série A · Cobertura de Transmissão 24h</span>
+    <span class="footer-live"><span class="live-dot"></span> AO VIVO</span>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="api.js"></script>
+  <script>
+    // ── LEAGUE CONFIG ─────────────────────────────────────────
+    const LEAGUE_ID = 71;
+
+    // ── clocks ──────────────────────────────────────────────
+    const DAYS=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    const MONTHS=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    function pad(n){return String(n).padStart(2,'0');}
+    function zoneDate(off){const n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*6e4+off*36e5);}
+    function updateClocks(){
+      const local=new Date(),b=zoneDate(-3);
+      const lTime = document.getElementById('time-usa');
+      const lDate = document.getElementById('date-usa');
+      if (lTime) lTime.textContent=`${pad(local.getHours())}:${pad(local.getMinutes())}:${pad(local.getSeconds())}`;
+      if (lDate) lDate.textContent=`${DAYS[local.getDay()]}, ${pad(local.getDate())} ${MONTHS[local.getMonth()]} ${local.getFullYear()}`;
+      document.getElementById('time-bra').textContent=`${pad(b.getHours())}:${pad(b.getMinutes())}:${pad(b.getSeconds())}`;
+      document.getElementById('date-bra').textContent=`${DAYS[b.getDay()]}, ${pad(b.getDate())} ${MONTHS[b.getMonth()]} ${b.getFullYear()}`;
+    }
+    updateClocks(); setInterval(updateClocks, 1000);
+
+    // ── fixtures & standings logic ───────────────────────────
+    let leagueFixtures = [];
+    let selectedDate = null;
+
+    function brtDateStr(utcStr){
+      return new Date(utcStr).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'});
+    }
+
+    function buildDateNav(){
+      const nav = document.getElementById('dateNav');
+      const dates = [...new Set(leagueFixtures.map(f => brtDateStr(f.date)))].sort((a,b) => {
+        const [d1,m1,y1] = a.split('/'); const [d2,m2,y2] = b.split('/');
+        return new Date(`${y1}-${m1}-${d1}`) - new Date(`${y2}-${m2}-${d2}`);
+      });
+
+      if(!dates.length) {
+        nav.innerHTML = '<span style="font-size:0.75rem; color:var(--subtext);">Nenhum jogo agendado.</span>';
+        selectedDate = null;
+        return;
+      }
+
+      if(!selectedDate || !dates.includes(selectedDate)){
+        const today = brtDateStr(new Date().toISOString());
+        selectedDate = dates.includes(today) ? today : dates[0];
+      }
+
+      const idx = dates.indexOf(selectedDate);
+      const start = Math.max(0, idx - 2);
+      const end = Math.min(dates.length - 1, idx + 2);
+      nav.innerHTML = '';
+
+      dates.slice(start, end + 1).forEach(ds => {
+        const [d,m,y] = ds.split('/');
+        const lbl = new Date(`${y}-${m}-${d}`).toLocaleDateString('pt-BR', {weekday: 'short', day: '2-digit', month: 'short'});
+        const btn = document.createElement('button');
+        btn.className = 'date-btn' + (ds === selectedDate ? ' active' : '');
+        btn.textContent = lbl.toUpperCase();
+        btn.onclick = () => { selectedDate = ds; buildDateNav(); renderFixtures(); };
+        nav.appendChild(btn);
+      });
+    }
+
+    function renderFixtures(){
+      const wrap = document.getElementById('fixturesList');
+      const day = leagueFixtures
+        .filter(f => selectedDate === null || brtDateStr(f.date) === selectedDate)
+        .sort((a,b) => new Date(a.date) - new Date(b.date));
+
+      if(!day.length){
+        wrap.innerHTML = '<div class="loading-state"><span>Sem jogos nesta data.</span></div>';
+        return;
+      }
+
+      wrap.innerHTML = '';
+      const rounds = {};
+      day.forEach(f => {
+        const roundName = f.round || 'Rodada Geral';
+        if(!rounds[roundName]) rounds[roundName] = [];
+        rounds[roundName].push(f);
+      });
+
+      Object.entries(rounds).forEach(([round, fixtures]) => {
+        const rh = document.createElement('div');
+        rh.className = 'round-header';
+        rh.textContent = round.replace('Regular Season','Rodada').replace('-','–').toUpperCase();
+        wrap.appendChild(rh);
+
+        fixtures.forEach(f => {
+          const live = API.isLive(f.statusShort);
+          const done = API.isFinished(f.statusShort);
+          const hasScore = f.homeGoals !== null && f.awayGoals !== null;
+          
+          const isHighlight = (CONFIG.HIGHLIGHT_TEAMS || []).some(team => 
+            (f.homeTeam?.name && f.homeTeam.name.toLowerCase().includes(team.toLowerCase())) || 
+            (f.awayTeam?.name && f.awayTeam.name.toLowerCase().includes(team.toLowerCase()))
+          );
+
+          const card = document.createElement('div');
+          card.className = 'fixture-card' + (live ? ' is-live' : '') + (done ? ' is-done' : '') + (isHighlight ? ' brasil-match' : '');
+
+          card.innerHTML = `
+            <div class="team-side">
+              <img class="team-logo" src="${f.homeTeam.logo}" alt="${f.homeTeam.name}" onerror="this.style.opacity=.3">
+              <div class="team-info">
+                <div class="team-name">${f.homeTeam.name}</div>
+                <div class="team-code">${f.homeTeam.code || ''}</div>
+              </div>
+            </div>
+            <div class="match-center">
+              ${hasScore
+                ? `<div class="score">${f.homeGoals} – ${f.awayGoals}</div>`
+                : `<div class="time-block">
+                    <div class="time-brt">🇧🇷 ${API.toBrazilTime(f.date)}</div>
+                  </div>`
+              }
+              <div class="status-tag${live ? ' live' : ''}">${live ? '🔴 ' : ''}${API.statusLabel(f.statusShort, f.elapsed)}</div>
+              <div class="venue-tag" style="font-size:0.5rem;">📍 ${f.venueCity || ''}</div>
+            </div>
+            <div class="team-side away">
+              <img class="team-logo" src="${f.awayTeam.logo}" alt="${f.awayTeam.name}" onerror="this.style.opacity=.3">
+              <div class="team-info">
+                <div class="team-name">${f.awayTeam.name}</div>
+                <div class="team-code">${f.awayTeam.code || ''}</div>
+              </div>
+            </div>`;
+          wrap.appendChild(card);
+        });
+      });
+    }
+
+    async function renderStandings(){
+      const container = document.getElementById('standingsContainer');
+      try {
+        const standings = await API.getStandings(LEAGUE_ID);
+        if(!standings || !standings.length){
+          container.innerHTML = '<div class="loading-state"><span>Classificação indisponível.</span></div>';
+          return;
+        }
+
+        standings.sort((a,b) => b.points - a.points || b.goalsDiff - a.goalsDiff || b.goalsFor - a.goalsFor);
+
+        const html = `
+          <div class="group-block">
+            <table class="standings-table">
+              <thead><tr>
+                <th class="left" style="width:26px">#</th>
+                <th class="left">Time</th>
+                <th title="Jogos">J</th>
+                <th title="Saldo">SG</th>
+                <th title="Pontos" style="color:var(--gold)">Pts</th>
+              </tr></thead>
+              <tbody>
+                ${standings.map((t, i) => {
+                  const rank = i + 1;
+                  const isHighlight = (CONFIG.HIGHLIGHT_TEAMS || []).some(teamName => 
+                    t.team?.name && t.team.name.toLowerCase().includes(teamName.toLowerCase())
+                  );
+
+                  let qual = 'elim';
+                  if(rank <= 4) qual = 'qual-libertadores';
+                  else if(rank >= standings.length - 3) qual = 'qual-relegation';
+
+                  const diff = t.goalsDiff > 0 ? `<span class="diff-pos">+${t.goalsDiff}</span>` : t.goalsDiff < 0 ? `<span class="diff-neg">${t.goalsDiff}</span>` : `<span class="diff-zero">0</span>`;
+
+                  return `
+                    <tr class="${qual}${isHighlight ? ' brazil-row' : ''}">
+                      <td class="rank-cell">${rank}</td>
+                      <td>
+                        <div class="team-cell">
+                          <img src="${t.team?.logo || ''}" onerror="this.style.opacity=.3">
+                          <span style="font-size:0.75rem;">${t.team?.name || ''}</span>
+                        </div>
+                      </td>
+                      <td class="num-cell">${t.played}</td>
+                      <td class="diff-cell">${diff}</td>
+                      <td class="pts-cell">${t.points}</td>
+                    </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>`;
+
+        container.innerHTML = html;
+        document.getElementById('lastUpdated').textContent = `Atualizado: ${new Date().toLocaleTimeString('pt-BR', {timeZone: 'America/Sao_Paulo'})} BRT`;
+      } catch (e) {
+        container.innerHTML = `<div class="loading-state"><span>⚠️ Erro ao carregar classificação</span></div>`;
+      }
+    }
+
+    async function init(){
+      try {
+        const all = await API.getFixtures();
+        leagueFixtures = all.filter(f => f.league && f.league.externalId === LEAGUE_ID);
+        buildDateNav();
+        renderFixtures();
+        await renderStandings();
+      } catch (e) {
+        document.getElementById('fixturesList').innerHTML = `<div class="loading-state"><span>⚠️ ${e.message}</span></div>`;
+      }
+    }
+
+    init();
+    
+    // Auto refresh data every 30s
+    setInterval(async () => {
+      try {
+        const all = await API.getFixtures();
+        leagueFixtures = all.filter(f => f.league && f.league.externalId === LEAGUE_ID);
+        renderFixtures();
+        await renderStandings();
+      } catch(_) {}
+    }, CONFIG.REFRESH_INTERVAL);
+
+    // particles
+    const cv=document.getElementById('particleCanvas'),ctx2=cv.getContext('2d');
+    let W2,H2,pts=[];
+    function resize(){W2=cv.width=window.innerWidth;H2=cv.height=window.innerHeight;}
+    function mkPt(){return{x:Math.random()*W2,y:H2+10,vx:(Math.random()-.5)*.4,vy:-(Math.random()*.5+.2),a:Math.random()*.35+.08,s:Math.random()*9+5,r:0,rs:(Math.random()-.5)*.02};}
+    function animPts(){
+      ctx2.clearRect(0,0,W2,H2);
+      if(pts.length<30)pts.push(mkPt());
+      pts.forEach((p,i)=>{p.x+=p.vx;p.y+=p.vy;p.r+=p.rs;p.a-=.0004;
+        ctx2.save();ctx2.globalAlpha=Math.max(0,p.a);ctx2.translate(p.x,p.y);ctx2.rotate(p.r);
+        ctx2.font=`${p.s}px serif`;ctx2.fillStyle='rgba(255,215,0,.6)';ctx2.fillText('⚽',0,0);
+        ctx2.restore();if(p.y<-20||p.a<=0)pts.splice(i,1);
+      });requestAnimationFrame(animPts);
+    }
+    window.addEventListener('resize',resize);resize();animPts();
+  </script>
+</body>
+</html>
