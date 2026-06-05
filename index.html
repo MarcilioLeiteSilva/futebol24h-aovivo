@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FIFA World Cup 2026 – Countdown Oficial</title>
-  <meta name="description" content="Countdown oficial para a Copa do Mundo FIFA 2026 | USA · Canada · México" />
+  <title>Futebol Brasileiro ao Vivo – Transmissão 24h</title>
+  <meta name="description" content="Acompanhe o Brasileirão Série A, Série B, Copa do Brasil e Copa do Nordeste com placares ao vivo, tabelas e agenda atualizada em tempo real." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
@@ -21,28 +21,28 @@
   <!-- ===== TOP BAR ===== -->
   <header class="top-bar">
     <div class="top-bar__left">
-      <!-- FIFA Logo mockup -->
-      <div class="fifa-badge">
-        <span class="fifa-badge__top">FIFA</span>
+      <!-- Brazilian Football badge -->
+      <div class="fifa-badge" style="border-color: #009b3a;">
+        <span class="fifa-badge__top" style="color: #ffdf00;">BRASIL</span>
         <span class="fifa-badge__mid">⚽</span>
-        <span class="fifa-badge__bot">WORLD CUP</span>
+        <span class="fifa-badge__bot" style="color: #fff;">AO VIVO</span>
       </div>
       <div class="host-flags">
-        <span class="flag" title="USA">🇺🇸</span>
-        <span class="flag" title="Canada">🇨🇦</span>
-        <span class="flag" title="México">🇲🇽</span>
-        <span class="host-label">2026</span>
+        <span class="flag" title="Brasileirão Série A">🏆</span>
+        <span class="flag" title="Série B">🥈</span>
+        <span class="flag" title="Copa do Brasil">🇧🇷</span>
+        <span class="host-label">24H</span>
       </div>
     </div>
 
     <!-- ===== DUAL CLOCKS (TOP RIGHT) ===== -->
     <div class="clocks-panel">
-      <div class="clock-card" id="clock-usa">
-        <span class="clock-card__flag">🇺🇸</span>
+      <div class="clock-card" id="clock-local">
+        <span class="clock-card__flag">🌎</span>
         <div class="clock-card__info">
-          <span class="clock-card__label">NEW YORK / ET</span>
-          <span class="clock-card__time" id="time-usa">--:--:--</span>
-          <span class="clock-card__date" id="date-usa">-- --- ----</span>
+          <span class="clock-card__label">SEU HORÁRIO</span>
+          <span class="clock-card__time" id="time-local">--:--:--</span>
+          <span class="clock-card__date" id="date-local">-- --- ----</span>
         </div>
       </div>
       <div class="clock-divider"></div>
@@ -62,26 +62,26 @@
 
     <!-- Hero title -->
     <div class="hero-title">
-      <p class="hero-title__pre">A MAIOR FESTA DO FUTEBOL</p>
-      <h1 class="hero-title__main">COPA DO MUNDO</h1>
+      <p class="hero-title__pre">COBERTURA COMPLETA AO VIVO</p>
+      <h1 class="hero-title__main">FUTEBOL BRASILEIRO</h1>
       <h2 class="hero-title__year">
-        <span class="year-digit">2</span>
-        <span class="year-digit">0</span>
-        <span class="year-digit">2</span>
-        <span class="year-digit">6</span>
+        <span class="year-digit" style="color:#009b3a">2</span>
+        <span class="year-digit" style="color:#ffdf00">0</span>
+        <span class="year-digit" style="color:#009b3a">2</span>
+        <span class="year-digit" style="color:#ffdf00">6</span>
       </h2>
-      <p class="hero-title__sub">USA &nbsp;·&nbsp; CANADA &nbsp;·&nbsp; MÉXICO</p>
+      <p class="hero-title__sub">SÉRIE A &nbsp;·&nbsp; SÉRIE B &nbsp;·&nbsp; COPA DO BRASIL &nbsp;·&nbsp; NORDESTE</p>
     </div>
 
     <!-- Trophy image -->
     <div class="trophy-container">
-      <img src="hero.png" alt="Troféu Copa do Mundo" class="trophy-img" />
+      <img src="hero.png" alt="Futebol Brasileiro ao Vivo" class="trophy-img" />
       <div class="trophy-glow"></div>
     </div>
 
     <!-- ===== COUNTDOWN ===== -->
     <section class="countdown-section">
-      <p class="countdown-label">COMEÇA EM</p>
+      <p class="countdown-label" id="cd-label">PRÓXIMO JOGO DA RODADA EM</p>
       <div class="countdown-grid">
         <div class="countdown-unit">
           <div class="countdown-number" id="cd-days">--</div>
@@ -105,7 +105,7 @@
       </div>
       <div class="countdown-event">
         <span class="countdown-event__icon">⚽</span>
-        <span class="countdown-event__text">Abertura · 11 de Junho de 2026 · México City</span>
+        <span class="countdown-event__text" id="cd-event-text">Buscando próxima partida ao vivo...</span>
         <span class="countdown-event__icon">⚽</span>
       </div>
     </section>
@@ -113,18 +113,16 @@
     <!-- ===== INFO STRIP ===== -->
     <div class="info-strip">
       <div class="info-strip__ticker" id="ticker">
-        <span>🏆 48 seleções · 104 jogos · 16 cidades-sede</span>
-        <span>⚽ Estreia do Brasil ainda a confirmar</span>
-        <span>🇺🇸 Estádio MetLife (Nova York) · capacidade 82.500</span>
-        <span>🌎 3 países, 1 sonho: A TAÇA!</span>
-        <span>📺 Transmissão ao vivo 24h neste canal</span>
-        <span>🇧🇷 Brasil busca o hexacampeonato!</span>
+        <span>🏆 Brasileirão Série A & Série B · Copa do Brasil · Copa do Nordeste</span>
+        <span>⚽ Transmissão ao vivo de futebol brasileiro 24 horas por dia</span>
+        <span>📊 Placar em tempo real e tabelas atualizadas dinamicamente</span>
+        <span>📺 Configure a cena como navegador no OBS Studio</span>
       </div>
     </div>
 
-    <!-- ===== GROUPS PLACEHOLDER ===== -->
+    <!-- ===== CAMPEONATOS SECTION ===== -->
     <section class="groups-section">
-      <h3 class="groups-title">GRUPOS DA COPA</h3>
+      <h3 class="groups-title">CAMPEONATOS TRANSMITIDOS</h3>
       <div class="groups-grid" id="groups-grid">
         <!-- generated by JS -->
       </div>
@@ -134,7 +132,7 @@
 
   <!-- ===== FOOTER ===== -->
   <footer class="footer">
-    <span>© 2026 Copa do Mundo FIFA · Transmissão 24h · Todos os direitos reservados</span>
+    <span>© 2026 Futebol Brasileiro · Transmissão 24h · Todos os direitos reservados</span>
     <span class="footer-live"><span class="live-dot"></span> AO VIVO</span>
   </footer>
 

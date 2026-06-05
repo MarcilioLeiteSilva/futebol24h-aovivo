@@ -3,21 +3,15 @@
    Dual clocks, countdown, particles, groups data
    ============================================================ */
 
-// ── WORLD CUP 2026 START DATE ──────────────────────────────
-// Opening match: Mexico vs TBD · June 11, 2026 · 19:00 local CDMX time (UTC-6)
-// That's June 12, 2026 · 01:00 UTC
-const TARGET_DATE = new Date('2026-06-12T01:00:00Z');
+// ── DYNAMIC TARGET MATCH DATE ──────────────────────────────
+let targetMatchDate = null;
 
-// ── GROUPS DATA ────────────────────────────────────────────
-const GROUPS = [
-  { id: 'A', teams: [{ flag:'🇺🇸', name:'Estados Unidos' }, { flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', name:'Inglaterra' },  { flag:'🇦🇺', name:'Austrália' },      { flag:'🇲🇦', name:'Marrocos' }] },
-  { id: 'B', teams: [{ flag:'🇧🇷', name:'Brasil' },        { flag:'🇷🇸', name:'Sérvia' },       { flag:'🇨🇭', name:'Suíça' },           { flag:'🇨🇲', name:'Camarões' }] },
-  { id: 'C', teams: [{ flag:'🇦🇷', name:'Argentina' },    { flag:'🇵🇱', name:'Polônia' },     { flag:'🇸🇦', name:'Arábia Saudita' },  { flag:'🇲🇽', name:'México' }] },
-  { id: 'D', teams: [{ flag:'🇫🇷', name:'França' },       { flag:'🇩🇰', name:'Dinamarca' },   { flag:'🇹🇳', name:'Tunísia' },         { flag:'🇦🇺', name:'Austrália' }] },
-  { id: 'E', teams: [{ flag:'🇪🇸', name:'Espanha' },      { flag:'🇩🇪', name:'Alemanha' },    { flag:'🇯🇵', name:'Japão' },           { flag:'🇨🇷', name:'Costa Rica' }] },
-  { id: 'F', teams: [{ flag:'🇵🇹', name:'Portugal' },     { flag:'🇺🇾', name:'Uruguai' },     { flag:'🇰🇷', name:'Coreia do Sul' },   { flag:'🇬🇭', name:'Gana' }] },
-  { id: 'G', teams: [{ flag:'🇧🇪', name:'Bélgica' },      { flag:'🇭🇷', name:'Croácia' },     { flag:'🇲🇦', name:'Marrocos' },        { flag:'🇨🇦', name:'Canadá' }] },
-  { id: 'H', teams: [{ flag:'🇳🇱', name:'Holanda' },      { flag:'🇸🇳', name:'Senegal' },     { flag:'🇪🇨', name:'Equador' },         { flag:'🇶🇦', name:'Catar' }] },
+// ── LEAGUES/COMPETITIONS DATA ──────────────────────────────
+const CAMPEONATOS = [
+  { name: 'Série A', logo: '🏆', desc: 'Primeira divisão do Campeonato Brasileiro com os 20 principais clubes do país.' },
+  { name: 'Série B', logo: '🥈', desc: 'Segunda divisão nacional disputada em pontos corridos rumo ao acesso à elite.' },
+  { name: 'Copa do Brasil', logo: '🇧🇷', desc: 'O torneio mais democrático do país reunindo clubes de todos os estados.' },
+  { name: 'Copa do Nordeste', logo: '☀️', desc: 'A maior copa regional do país com os gigantes e rivalidades do Nordeste.' }
 ];
 
 // ── PARTICLE SYSTEM ────────────────────────────────────────
@@ -102,16 +96,19 @@ function getTimeInZone(offsetHours) {
 
 // ── UPDATE CLOCKS ──────────────────────────────────────────
 function updateClocks() {
-  // USA Eastern Time: UTC-5 (standard) / UTC-4 (daylight saving)
-  // June = EDT = UTC-4
-  const usa = getTimeInZone(-4);
-  document.getElementById('time-usa').textContent = formatTime(usa);
-  document.getElementById('date-usa').textContent = formatDate(usa);
+  // Local time of viewer
+  const local = new Date();
+  const localTimeEl = document.getElementById('time-local');
+  const localDateEl = document.getElementById('date-local');
+  if (localTimeEl) localTimeEl.textContent = formatTime(local);
+  if (localDateEl) localDateEl.textContent = formatDate(local);
 
-  // Brazil: BRT = UTC-3 (most of the year)
+  // Brazil: BRT = UTC-3
   const bra = getTimeInZone(-3);
-  document.getElementById('time-bra').textContent = formatTime(bra);
-  document.getElementById('date-bra').textContent = formatDate(bra);
+  const braTimeEl = document.getElementById('time-bra');
+  const braDateEl = document.getElementById('date-bra');
+  if (braTimeEl) braTimeEl.textContent = formatTime(bra);
+  if (braDateEl) braDateEl.textContent = formatDate(bra);
 }
 
 // ── COUNTDOWN ─────────────────────────────────────────────
@@ -122,16 +119,48 @@ function animateFlip(el) {
   setTimeout(() => el.classList.remove('flip'), 200);
 }
 
+// ── LOAD NEXT MATCH FOR COUNTDOWN ─────────────────────────
+async function loadNextMatchForCountdown() {
+  try {
+    const upcoming = await API.getUpcomingFixtures(1);
+    if (upcoming && upcoming.length) {
+      const next = upcoming[0];
+      targetMatchDate = new Date(next.date);
+      const eventText = document.getElementById('cd-event-text');
+      if (eventText) {
+        eventText.textContent = `${next.homeTeam.name} vs ${next.awayTeam.name} · ${API.toDisplayDate(next.date)} · ${API.toBrazilTime(next.date)} BRT`;
+      }
+    } else {
+      const eventText = document.getElementById('cd-event-text');
+      if (eventText) eventText.textContent = "Nenhum jogo agendado no momento.";
+    }
+  } catch (e) {
+    console.warn("Error loading next match for countdown:", e);
+  }
+}
+
 function updateCountdown() {
+  if (!targetMatchDate) {
+    const daysEl = document.getElementById('cd-days');
+    const hoursEl = document.getElementById('cd-hours');
+    const minutesEl = document.getElementById('cd-minutes');
+    const secondsEl = document.getElementById('cd-seconds');
+    if (daysEl) daysEl.textContent = '--';
+    if (hoursEl) hoursEl.textContent = '--';
+    if (minutesEl) minutesEl.textContent = '--';
+    if (secondsEl) secondsEl.textContent = '--';
+    return;
+  }
   const now  = new Date();
-  const diff = TARGET_DATE - now;
+  const diff = targetMatchDate - now;
 
   if (diff <= 0) {
     document.getElementById('cd-days').textContent    = '00';
     document.getElementById('cd-hours').textContent   = '00';
     document.getElementById('cd-minutes').textContent = '00';
     document.getElementById('cd-seconds').textContent = '00';
-    document.querySelector('.countdown-label').textContent = '🏆 A COPA JÁ COMEÇOU!';
+    const label = document.getElementById('cd-label');
+    if (label) label.textContent = '⚽ JOGO EM ANDAMENTO / RECENTE!';
     return;
   }
 
@@ -144,7 +173,7 @@ function updateCountdown() {
 
   Object.entries(ids).forEach(([key, val]) => {
     const el = document.getElementById(`cd-${key}`);
-    if (prevValues[key] !== val) {
+    if (el && prevValues[key] !== val) {
       animateFlip(el);
       el.textContent = pad(val);
       prevValues[key] = val;
@@ -152,27 +181,31 @@ function updateCountdown() {
   });
 }
 
-// ── BUILD GROUPS ───────────────────────────────────────────
-function buildGroups() {
+// ── BUILD LEAGUES ──────────────────────────────────────────
+function buildLeagues() {
   const container = document.getElementById('groups-grid');
-  GROUPS.forEach(group => {
+  if (!container) return;
+  container.innerHTML = '';
+  CAMPEONATOS.forEach(comp => {
     const card = document.createElement('div');
     card.className = 'group-card';
 
     const header = document.createElement('div');
     header.className = 'group-card__header';
-    header.textContent = `GRUPO ${group.id}`;
+    header.style.background = 'rgba(0,155,58,0.15)';
+    header.style.borderColor = 'rgba(0,155,58,0.3)';
+    header.style.color = '#fff';
+    header.innerHTML = `<span style="margin-right:8px">${comp.logo}</span>${comp.name}`;
     card.appendChild(header);
 
-    const teamsDiv = document.createElement('div');
-    teamsDiv.className = 'group-card__teams';
-    group.teams.forEach(team => {
-      const row = document.createElement('div');
-      row.className = 'team-row';
-      row.innerHTML = `<span class="team-flag">${team.flag}</span><span class="team-name">${team.name}</span>`;
-      teamsDiv.appendChild(row);
-    });
-    card.appendChild(teamsDiv);
+    const bodyDiv = document.createElement('div');
+    bodyDiv.className = 'group-card__teams';
+    bodyDiv.style.padding = '16px';
+    bodyDiv.style.fontSize = '0.78rem';
+    bodyDiv.style.lineHeight = '1.4';
+    bodyDiv.style.color = 'var(--subtext)';
+    bodyDiv.textContent = comp.desc;
+    card.appendChild(bodyDiv);
     container.appendChild(card);
   });
 }
@@ -207,12 +240,16 @@ async function setupTicker() {
 }
 
 // ── INIT ───────────────────────────────────────────────────
-buildGroups();
+buildLeagues();
 setupTicker();
 updateClocks();
+loadNextMatchForCountdown();
 updateCountdown();
 
 setInterval(() => {
   updateClocks();
   updateCountdown();
 }, 1000);
+
+// Periodically reload next match for countdown every 5 mins
+setInterval(loadNextMatchForCountdown, 300000);

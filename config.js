@@ -4,8 +4,17 @@
  */
 const CONFIG = {
   API_BASE: 'https://zapscore-zapscore-api.gtalg3.easypanel.host',
-  WORLD_CUP_LEAGUE_ID: 1,      // externalId for FIFA World Cup 2026
-  WORLD_CUP_SEASON: 2026,
+  LEAGUES: [
+    { id: 71, name: 'Série A', season: 2026 },
+    { id: 72, name: 'Série B', season: 2026 },
+    { id: 73, name: 'Copa do Brasil', season: 2026 },
+    { id: 612, name: 'Copa do Nordeste', season: 2026 }
+  ],
+  HIGHLIGHT_TEAMS: [
+    'Flamengo', 'Palmeiras', 'Vasco', 'Corinthians', 'São Paulo', 'Santos', 
+    'Grêmio', 'Internacional', 'Atlético Mineiro', 'Cruzeiro', 'Bahia', 
+    'Vitória', 'Fortaleza', 'Ceará', 'Sport Recife'
+  ],
   REFRESH_INTERVAL: 30_000,    // live data refresh: 30s
   CONTENT_INTERVAL: 60_000,    // Google Sheets content refresh: 60s
 

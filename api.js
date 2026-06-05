@@ -14,16 +14,24 @@ const API = (() => {
 
   // ── PUBLIC METHODS ─────────────────────────────────────
 
-  /** All Copa do Mundo 2026 fixtures */
+  /** All configured league fixtures */
   async function getFixtures() {
-    return get(`/fixtures?leagueId=${CONFIG.WORLD_CUP_LEAGUE_ID}&season=${CONFIG.WORLD_CUP_SEASON}`);
+    const promises = CONFIG.LEAGUES.map(league =>
+      get(`/fixtures?leagueId=${league.id}&season=${league.season}`)
+        .catch(err => {
+          console.warn(`Failed to fetch fixtures for league ${league.name}:`, err);
+          return [];
+        })
+    );
+    const results = await Promise.all(promises);
+    return results.flat().sort((a, b) => new Date(a.date) - new Date(b.date));
   }
 
-  /** Today's fixtures (all competitions, filter by league after) */
+  /** Today's fixtures filtered by configured leagues */
   async function getTodayFixtures() {
     const all = await get('/fixtures/today');
-    // Filter only World Cup
-    return all.filter(f => f.league?.externalId === CONFIG.WORLD_CUP_LEAGUE_ID);
+    const leagueIds = CONFIG.LEAGUES.map(l => l.id);
+    return all.filter(f => f.league && leagueIds.includes(f.league.externalId));
   }
 
   /** Fixture detail by internal UUID */
@@ -31,9 +39,11 @@ const API = (() => {
     return get(`/fixtures/${id}`);
   }
 
-  /** Standings for Copa do Mundo 2026 */
-  async function getStandings() {
-    return get(`/standings?leagueId=${CONFIG.WORLD_CUP_LEAGUE_ID}&season=${CONFIG.WORLD_CUP_SEASON}`);
+  /** Standings for a specific league */
+  async function getStandings(leagueId = 71) {
+    const league = CONFIG.LEAGUES.find(l => l.id === Number(leagueId));
+    if (!league) return [];
+    return get(`/standings?leagueId=${leagueId}&season=${league.season}`);
   }
 
   // ── HELPERS ────────────────────────────────────────────

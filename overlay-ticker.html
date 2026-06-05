@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
-  <title>Overlay Ticker – Copa 2026</title>
+  <title>Overlay Ticker – Futebol Brasileiro</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@600;700&display=swap" rel="stylesheet"/>
   <style>
     /* TRANSPARENT BACKGROUND — required for OBS Browser Source */
@@ -96,8 +96,8 @@
     <div class="ticker-brand">
       <span class="ticker-ball">⚽</span>
       <div class="ticker-brand-text">
-        <span class="ticker-brand-top">FIFA</span>
-        <span class="ticker-brand-bot">2026</span>
+        <span class="ticker-brand-top">BRASIL</span>
+        <span class="ticker-brand-bot">AO VIVO</span>
       </div>
     </div>
     <!-- Live indicator -->
@@ -111,9 +111,9 @@
     <!-- Clocks -->
     <div class="ticker-clocks">
       <div class="tick-clock">
-        <span class="tick-clock-flag">🇺🇸</span>
+        <span class="tick-clock-flag">🌎</span>
         <div class="tick-clock-info">
-          <span class="tick-clock-label">NY / ET</span>
+          <span class="tick-clock-label">LOCAL</span>
           <span class="tick-clock-time" id="t-usa">--:--</span>
         </div>
       </div>
@@ -133,22 +133,20 @@
     function pad(n){return String(n).padStart(2,'0');}
     function zoneDate(off){const n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*6e4+off*36e5);}
     function updateClocks(){
-      const u=zoneDate(-4),b=zoneDate(-3);
-      document.getElementById('t-usa').textContent=`${pad(u.getHours())}:${pad(u.getMinutes())}:${pad(u.getSeconds())}`;
+      const local=new Date(),b=zoneDate(-3);
+      document.getElementById('t-usa').textContent=`${pad(local.getHours())}:${pad(local.getMinutes())}:${pad(local.getSeconds())}`;
       document.getElementById('t-bra').textContent=`${pad(b.getHours())}:${pad(b.getMinutes())}:${pad(b.getSeconds())}`;
     }
     updateClocks(); setInterval(updateClocks,1000);
 
     // Default ticker items (used when no sheet configured)
     const DEFAULT_ITEMS = [
-      {icon:'🏆',text:'Copa do Mundo FIFA 2026',highlight:true},
-      {icon:'🇺🇸',text:'USA · Canada · México'},
-      {icon:'⚽',text:'48 Seleções · 104 Jogos · 16 Cidades'},
-      {icon:'🇧🇷',text:'Brasil busca o hexacampeonato!',highlight:true},
-      {icon:'📅',text:'Abertura: 11 de Junho · Estádio Azteca · Cidade do México'},
-      {icon:'🌎',text:'Transmissão 24h ao vivo neste canal'},
-      {icon:'🏅',text:'Fase de Grupos: 11 Jun – 2 Jul'},
-      {icon:'⭐',text:'Oitavas: 3–8 Jul · Quartas: 11–12 Jul · Semis: 15–16 Jul · Final: 19 Jul'},
+      {icon:'🏆',text:'Brasileirão Série A & Série B',highlight:true},
+      {icon:'🇧🇷',text:'Copa do Brasil & Copa do Nordeste'},
+      {icon:'⚽',text:'Placares e tabelas atualizadas em tempo real!'},
+      {icon:'📺',text:'Transmissão 24h de futebol nacional ao vivo'},
+      {icon:'📊',text:'Classificação e jogos atualizados a cada 30 segundos'},
+      {icon:'⭐',text:'Adicione como fonte de navegador no OBS Studio (1920x80)'},
     ];
 
     async function buildTicker(){

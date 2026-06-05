@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
-  <title>Overlay Placar – Copa 2026</title>
+  <title>Overlay Placar – Futebol Brasileiro</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@600;700&display=swap" rel="stylesheet"/>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -87,7 +87,7 @@
 <body>
   <div class="score-widget" id="scoreWidget">
     <div class="sw-header">
-      <div class="sw-title">⚽ COPA 2026</div>
+      <div class="sw-title">⚽ BRASIL 24H</div>
       <div class="sw-live"><div class="live-dot"></div>AO VIVO</div>
     </div>
     <div class="no-live-widget"><div class="nw-text">Aguardando início...</div></div>
@@ -123,7 +123,7 @@
         }).catch(()=>{
           const div=document.createElement('div');
           div.className='no-live-widget';
-          div.innerHTML='<div class="nw-text">Copa do Mundo FIFA 2026</div>';
+          div.innerHTML='<div class="nw-text">Futebol Brasileiro</div>';
           widget.appendChild(div);
         });
         return;

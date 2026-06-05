@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda de Jogos – Copa do Mundo FIFA 2026</title>
+  <title>Agenda de Jogos – Futebol Brasileiro</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Bebas+Neue&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
@@ -79,16 +79,16 @@
 
   <header class="top-bar">
     <div class="top-bar__left">
-      <div class="fifa-badge"><span class="fifa-badge__top">FIFA</span><span class="fifa-badge__mid">⚽</span><span class="fifa-badge__bot">WORLD CUP</span></div>
+      <div class="fifa-badge" style="border-color: #009b3a;"><span class="fifa-badge__top" style="color: #ffdf00;">BRASIL</span><span class="fifa-badge__mid">⚽</span><span class="fifa-badge__bot" style="color: #fff;">AO VIVO</span></div>
       <div class="host-flags">
-        <span class="flag">🇺🇸</span><span class="flag">🇨🇦</span><span class="flag">🇲🇽</span>
-        <span class="host-label">2026</span>
+        <span class="flag" title="Série A">🏆</span><span class="flag" title="Série B">🥈</span><span class="flag" title="Copa do Brasil">🇧🇷</span>
+        <span class="host-label">24H</span>
       </div>
     </div>
     <div class="clocks-panel">
-      <div class="clock-card"><span class="clock-card__flag">🇺🇸</span>
+      <div class="clock-card"><span class="clock-card__flag">🌎</span>
         <div class="clock-card__info">
-          <span class="clock-card__label">NEW YORK / ET</span>
+          <span class="clock-card__label">SEU HORÁRIO</span>
           <span class="clock-card__time" id="time-usa">--:--:--</span>
           <span class="clock-card__date" id="date-usa">-- --- ----</span>
         </div>
@@ -107,8 +107,9 @@
   <div class="page-wrap">
     <div class="page-title">
       <h1>📅 AGENDA DE JOGOS</h1>
-      <p>COPA DO MUNDO FIFA 2026 · TODOS OS JOGOS · USA · CANADA · MÉXICO</p>
+      <p>CAMPEONATOS NACIONAIS · CRONOGRAMA DE TRANSMISSÕES AO VIVO</p>
     </div>
+    <div class="league-nav" id="leagueNav" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; padding:0 24px 12px;"></div>
     <div class="date-nav" id="dateNav"></div>
     <div class="fixtures-wrap">
       <div class="loading-state" id="fixturesList">
@@ -119,7 +120,7 @@
   </div>
 
   <footer class="footer">
-    <span>© 2026 Copa do Mundo FIFA · 104 Jogos · 16 Cidades</span>
+    <span>© 2026 Futebol Brasileiro · Série A, Série B, Copas · Transmissão 24h</span>
     <span class="footer-live"><span class="live-dot"></span> AO VIVO</span>
   </footer>
 
@@ -132,29 +133,73 @@
     function pad(n){return String(n).padStart(2,'0');}
     function zoneDate(off){const n=new Date();return new Date(n.getTime()+n.getTimezoneOffset()*6e4+off*36e5);}
     function updateClocks(){
-      const u=zoneDate(-4),b=zoneDate(-3);
-      document.getElementById('time-usa').textContent=`${pad(u.getHours())}:${pad(u.getMinutes())}:${pad(u.getSeconds())}`;
-      document.getElementById('date-usa').textContent=`${DAYS[u.getDay()]}, ${pad(u.getDate())} ${MONTHS[u.getMonth()]} ${u.getFullYear()}`;
+      const local=new Date(),b=zoneDate(-3);
+      const lTime = document.getElementById('time-usa');
+      const lDate = document.getElementById('date-usa');
+      if (lTime) lTime.textContent=`${pad(local.getHours())}:${pad(local.getMinutes())}:${pad(local.getSeconds())}`;
+      if (lDate) lDate.textContent=`${DAYS[local.getDay()]}, ${pad(local.getDate())} ${MONTHS[local.getMonth()]} ${local.getFullYear()}`;
       document.getElementById('time-bra').textContent=`${pad(b.getHours())}:${pad(b.getMinutes())}:${pad(b.getSeconds())}`;
       document.getElementById('date-bra').textContent=`${DAYS[b.getDay()]}, ${pad(b.getDate())} ${MONTHS[b.getMonth()]} ${b.getFullYear()}`;
     }
     updateClocks(); setInterval(updateClocks,1000);
 
     // ── agenda ──────────────────────────────────────────────
-    let allFixtures=[], selectedDate=null;
-    const BRAZIL_ID = 'bbf28b6f-2689-4322-92ad-20e04569da74'; // Brazil internal UUID
+    let allFixtures=[], selectedDate=null, selectedLeagueId = 'ALL';
+
+    function getFilteredFixtures() {
+      if (selectedLeagueId === 'ALL') return allFixtures;
+      return allFixtures.filter(f => f.league && f.league.externalId === Number(selectedLeagueId));
+    }
 
     function brtDateStr(utcStr){
       return new Date(utcStr).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'});
     }
 
+    function buildLeagueNav() {
+      const nav = document.getElementById('leagueNav');
+      if (!nav) return;
+      nav.innerHTML = '';
+      
+      const btnAll = document.createElement('button');
+      btnAll.className = 'date-btn' + (selectedLeagueId === 'ALL' ? ' active' : '');
+      btnAll.textContent = 'TODOS';
+      btnAll.onclick = () => {
+        selectedLeagueId = 'ALL';
+        selectedDate = null;
+        buildLeagueNav();
+        buildDateNav();
+        renderFixtures();
+      };
+      nav.appendChild(btnAll);
+
+      CONFIG.LEAGUES.forEach(league => {
+        const btn = document.createElement('button');
+        btn.className = 'date-btn' + (selectedLeagueId === league.id ? ' active' : '');
+        btn.textContent = league.name.toUpperCase();
+        btn.onclick = () => {
+          selectedLeagueId = league.id;
+          selectedDate = null;
+          buildLeagueNav();
+          buildDateNav();
+          renderFixtures();
+        };
+        nav.appendChild(btn);
+      });
+    }
+
     function buildDateNav(){
       const nav=document.getElementById('dateNav');
-      const dates=[...new Set(allFixtures.map(f=>brtDateStr(f.date)))].sort((a,b)=>{
+      const filtered = getFilteredFixtures();
+      const dates=[...new Set(filtered.map(f=>brtDateStr(f.date)))].sort((a,b)=>{
         const [d1,m1,y1]=a.split('/'); const [d2,m2,y2]=b.split('/');
         return new Date(`${y1}-${m1}-${d1}`) - new Date(`${y2}-${m2}-${d2}`);
       });
-      if(!selectedDate){
+      if(!dates.length) {
+        nav.innerHTML = '';
+        selectedDate = null;
+        return;
+      }
+      if(!selectedDate || !dates.includes(selectedDate)){
         const today=brtDateStr(new Date().toISOString());
         selectedDate=dates.includes(today)?today:dates[0];
       }
@@ -174,30 +219,39 @@
 
     function renderFixtures(){
       const wrap=document.getElementById('fixturesList');
-      const day=allFixtures
-        .filter(f=>brtDateStr(f.date)===selectedDate)
+      const filtered = getFilteredFixtures();
+      const day=filtered
+        .filter(f=>selectedDate === null || brtDateStr(f.date)===selectedDate)
         .sort((a,b)=>new Date(a.date)-new Date(b.date));
 
-      if(!day.length){wrap.innerHTML='<div class="loading-state"><span>Sem jogos nesta data.</span></div>';return;}
+      if(!day.length){wrap.innerHTML='<div class="loading-state"><span>Sem jogos cadastrados nesta data.</span></div>';return;}
 
       wrap.innerHTML='';
       const rounds={};
-      day.forEach(f=>{if(!rounds[f.round])rounds[f.round]=[];rounds[f.round].push(f);});
+      day.forEach(f=>{
+        const groupName = `${f.league?.name || 'Geral'} – ${f.round || ''}`;
+        if(!rounds[groupName])rounds[groupName]=[];
+        rounds[groupName].push(f);
+      });
 
       Object.entries(rounds).forEach(([round,fixtures])=>{
         const rh=document.createElement('div');
         rh.className='round-header';
-        rh.textContent=round.replace('Group Stage','Fase de Grupos').replace('-','–').toUpperCase();
+        rh.textContent=round.replace('Group Stage','Fase de Grupos').replace('Regular Season','Rodada').replace('-','–').toUpperCase();
         wrap.appendChild(rh);
 
         fixtures.forEach(f=>{
           const live=API.isLive(f.statusShort);
           const done=API.isFinished(f.statusShort);
           const hasScore=f.homeGoals!==null&&f.awayGoals!==null;
-          const isBrasil=f.homeTeamId===BRAZIL_ID||f.awayTeamId===BRAZIL_ID;
+          
+          const isHighlight = (CONFIG.HIGHLIGHT_TEAMS || []).some(team => 
+            (f.homeTeam?.name && f.homeTeam.name.toLowerCase().includes(team.toLowerCase())) || 
+            (f.awayTeam?.name && f.awayTeam.name.toLowerCase().includes(team.toLowerCase()))
+          );
 
           const card=document.createElement('div');
-          card.className='fixture-card'+(live?' is-live':'')+(done?' is-done':'')+(isBrasil?' brasil-match':'');
+          card.className='fixture-card'+(live?' is-live':'')+(done?' is-done':'')+(isHighlight?' brasil-match':'');
 
           card.innerHTML=`
             <div class="team-side">
@@ -233,7 +287,7 @@
     async function init(){
       try{
         allFixtures=await API.getFixtures();
-        buildDateNav(); renderFixtures();
+        buildLeagueNav(); buildDateNav(); renderFixtures();
       }catch(e){
         document.getElementById('fixturesList').innerHTML=`<div class="loading-state"><span>⚠️ ${e.message}</span></div>`;
       }
