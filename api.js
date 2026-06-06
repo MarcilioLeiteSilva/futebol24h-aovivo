@@ -17,7 +17,7 @@ const API = (() => {
   /** All configured league fixtures */
   async function getFixtures() {
     const promises = CONFIG.LEAGUES.map(league =>
-      get(`/fixtures?leagueId=${league.id}&season=${league.season}`)
+      get(`/fixtures?leagueId=${league.id}&season=${league.season}&limit=1000`)
         .catch(err => {
           console.warn(`Failed to fetch fixtures for league ${league.name}:`, err);
           return [];

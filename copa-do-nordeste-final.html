@@ -419,15 +419,15 @@
 
     .bar-left {
       height: 100%;
-      background: #003087;
-      /* Fortaleza Blue */
+      background: #C8102E;
+      /* Vitória Red */
       border-radius: 3px 0 0 3px;
     }
 
     .bar-right {
       height: 100%;
-      background: #C8102E;
-      /* CRB Red */
+      background: #003087;
+      /* Fortaleza Blue */
       border-radius: 0 3px 3px 0;
     }
 
@@ -483,12 +483,12 @@
     }
 
     .tactical-player.team-home {
-      background: #003087;
+      background: #C8102E;
       border: 1px solid #fff;
     }
 
     .tactical-player.team-away {
-      background: #C8102E;
+      background: #003087;
       border: 1px solid #fff;
     }
 
@@ -549,6 +549,21 @@
       color: var(--subtext);
       margin-top: 2px;
     }
+    .tactical-field-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(2, 8, 18, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-size: 0.8rem;
+      color: var(--subtext);
+      z-index: 10;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      backdrop-filter: blur(4px);
+    }
   </style>
 </head>
 
@@ -570,30 +585,17 @@
     <!-- Center Score Banner -->
     <div class="top-bar__center-score">
       <div class="score-banner">
-        <span class="score-team">FOR</span>
-        <!-- Fortaleza SVG Logo -->
-        <svg class="score-svg" viewBox="0 0 100 100" width="22" height="22"
-          style="display: inline-block; vertical-align: middle; margin: 0 4px;">
-          <path d="M10 10 L90 10 C90 60 50 95 50 95 C50 95 10 60 10 10 Z" fill="#003087" stroke="#fff"
-            stroke-width="4" />
-          <path d="M10 38 L90 38 C90 60 50 95 50 95 C50 95 10 60 10 38 Z" fill="#C8102E" />
-          <path d="M22 38 L22 80 C29 86 50 93 50 93 C50 93 71 86 78 80 L78 38 Z" fill="#fff" />
-          <path d="M32 38 L32 83 C38 87 50 91 50 91 C50 91 62 87 68 83 L68 38 Z" fill="#C8102E" />
-        </svg>
+        <span class="score-team">VIT</span>
+        <!-- Vitória Logo -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/Esporte_Clube_Vit%C3%B3ria_%282024%29.svg" width="22" height="22"
+          style="display: inline-block; vertical-align: middle; margin: 0 4px; object-fit: contain;">
         <span class="score-digits" id="liveScoreHome">0</span>
         <span class="score-separator">:</span>
         <span class="score-digits" id="liveScoreAway">0</span>
-        <!-- CRB SVG Logo -->
-        <svg class="score-svg" viewBox="0 0 100 100" width="22" height="22"
-          style="display: inline-block; vertical-align: middle; margin: 0 4px;">
-          <path d="M10 15 L90 15 L90 50 C90 75 50 95 50 95 C50 95 10 75 10 50 Z" fill="#fff" stroke="#C8102E"
-            stroke-width="5" />
-          <path d="M10 15 L90 15 L90 42 L10 42 Z" fill="#C8102E" />
-          <line x1="32" y1="50" x2="32" y2="84" stroke="#C8102E" stroke-width="7" />
-          <line x1="50" y1="50" x2="50" y2="90" stroke="#C8102E" stroke-width="7" />
-          <line x1="68" y1="50" x2="68" y2="84" stroke="#C8102E" stroke-width="7" />
-        </svg>
-        <span class="score-team">CRB</span>
+        <!-- Fortaleza Logo -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Fortaleza_Esporte_Clube_logo.png" width="22" height="22"
+          style="display: inline-block; vertical-align: middle; margin: 0 4px; object-fit: contain;">
+        <span class="score-team">FOR</span>
         <span class="live-indicator-tag" id="liveIndicator"><span class="indicator-dot"></span> AGUARDANDO</span>
       </div>
     </div>
@@ -654,12 +656,6 @@
     <div class="carousel-column">
       <div class="carousel-card">
 
-        <!-- Arrows carousel nav -->
-        <div class="carousel-nav-arrows">
-          <button class="arrow-btn" onclick="prevSlide()" title="Anterior">◀</button>
-          <button class="arrow-btn" onclick="nextSlide()" title="Próximo">▶</button>
-        </div>
-
         <!-- Tab heads -->
         <div class="tabs-header">
           <button class="tab-btn active" id="tab0" onclick="showSlide(0)">ESCALAÇÃO</button>
@@ -674,6 +670,32 @@
           <!-- Slide 1: Lineup lists -->
           <div class="carousel-slide active" id="slide0">
             <div class="lineup-split">
+              <!-- Vitória -->
+              <div>
+                <div class="lineup-title">🔴 VITÓRIA</div>
+                <ul class="lineup-list">
+                  <li class="lineup-item"><span class="lineup-num">12</span><span class="lineup-name">M. Albino</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">2</span><span class="lineup-name">Hereda</span></li>
+                  <li class="lineup-item"><span class="lineup-num">3</span><span class="lineup-name">F. Alemão</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">4</span><span class="lineup-name">G. Henrique</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">6</span><span class="lineup-name">M. Ribeiro</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">5</span><span class="lineup-name">Falcão</span></li>
+                  <li class="lineup-item"><span class="lineup-num">8</span><span class="lineup-name">João Pedro</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">10</span><span class="lineup-name">Gegê</span></li>
+                  <li class="lineup-item"><span class="lineup-num">11</span><span class="lineup-name">Mike</span></li>
+                  <li class="lineup-item"><span class="lineup-num">9</span><span class="lineup-name">A. Ramon (C)</span>
+                  </li>
+                  <li class="lineup-item"><span class="lineup-num">7</span><span class="lineup-name">Léo Pereira</span>
+                  </li>
+                </ul>
+                <div class="coach-row">Téc: T. Carpini</div>
+              </div>
+
               <!-- Fortaleza -->
               <div>
                 <div class="lineup-title">🦁 FORTALEZA</div>
@@ -699,32 +721,6 @@
                 </ul>
                 <div class="coach-row">Téc: J. P. Vojvoda</div>
               </div>
-
-              <!-- CRB -->
-              <div>
-                <div class="lineup-title">🔴 CRB</div>
-                <ul class="lineup-list">
-                  <li class="lineup-item"><span class="lineup-num">12</span><span class="lineup-name">M. Albino</span>
-                  </li>
-                  <li class="lineup-item"><span class="lineup-num">2</span><span class="lineup-name">Hereda</span></li>
-                  <li class="lineup-item"><span class="lineup-num">3</span><span class="lineup-name">F. Alemão</span>
-                  </li>
-                  <li class="lineup-item"><span class="lineup-num">4</span><span class="lineup-name">G. Henrique</span>
-                  </li>
-                  <li class="lineup-item"><span class="lineup-num">6</span><span class="lineup-name">M. Ribeiro</span>
-                  </li>
-                  <li class="lineup-item"><span class="lineup-num">5</span><span class="lineup-name">Falcão</span></li>
-                  <li class="lineup-item"><span class="lineup-num">8</span><span class="lineup-name">João Pedro</span>
-                  </li>
-                  <li class="lineup-item"><span class="lineup-num">10</span><span class="lineup-name">Gegê</span></li>
-                  <li class="lineup-item"><span class="lineup-num">11</span><span class="lineup-name">Mike</span></li>
-                  <li class="lineup-item"><span class="lineup-num">9</span><span class="lineup-name">A. Ramon (C)</span>
-                  </li>
-                  <li class="lineup-item"><span class="lineup-num">7</span><span class="lineup-name">Léo Pereira</span>
-                  </li>
-                </ul>
-                <div class="coach-row">Téc: D. Paulista</div>
-              </div>
             </div>
           </div>
 
@@ -734,65 +730,65 @@
               <!-- Posse de bola -->
               <div class="stat-row">
                 <div class="stat-labels">
-                  <span>58%</span>
-                  <span class="stat-name">Posse de Bola</span>
                   <span>42%</span>
+                  <span class="stat-name">Posse de Bola</span>
+                  <span>58%</span>
                 </div>
                 <div class="bar-outer">
-                  <div class="bar-left" style="width: 58%;"></div>
-                  <div class="bar-right" style="width: 42%;"></div>
+                  <div class="bar-left" style="width: 42%;"></div>
+                  <div class="bar-right" style="width: 58%;"></div>
                 </div>
               </div>
 
               <!-- Finalizações -->
               <div class="stat-row">
                 <div class="stat-labels">
-                  <span>14</span>
-                  <span class="stat-name">Finalizações (Chutes)</span>
                   <span>6</span>
+                  <span class="stat-name">Finalizações (Chutes)</span>
+                  <span>14</span>
                 </div>
                 <div class="bar-outer">
-                  <div class="bar-left" style="width: 70%;"></div>
-                  <div class="bar-right" style="width: 30%;"></div>
+                  <div class="bar-left" style="width: 30%;"></div>
+                  <div class="bar-right" style="width: 70%;"></div>
                 </div>
               </div>
 
               <!-- Escanteios -->
               <div class="stat-row">
                 <div class="stat-labels">
-                  <span>8</span>
-                  <span class="stat-name">Escanteios</span>
                   <span>3</span>
+                  <span class="stat-name">Escanteios</span>
+                  <span>8</span>
                 </div>
                 <div class="bar-outer">
-                  <div class="bar-left" style="width: 72%;"></div>
-                  <div class="bar-right" style="width: 28%;"></div>
+                  <div class="bar-left" style="width: 28%;"></div>
+                  <div class="bar-right" style="width: 72%;"></div>
                 </div>
               </div>
 
               <!-- Faltas Cometidas -->
               <div class="stat-row">
                 <div class="stat-labels">
-                  <span>10</span>
-                  <span class="stat-name">Faltas Cometidas</span>
                   <span>12</span>
+                  <span class="stat-name">Faltas Cometidas</span>
+                  <span>10</span>
                 </div>
                 <div class="bar-outer">
-                  <div class="bar-left" style="width: 45%;"></div>
-                  <div class="bar-right" style="width: 55%;"></div>
+                  <div class="bar-left" style="width: 55%;"></div>
+                  <div class="bar-right" style="width: 45%;"></div>
                 </div>
               </div>
 
               <!-- Cartões Amarelos -->
               <div class="stat-row">
                 <div class="stat-labels">
-                  <span>2</span>
-                  <span class="stat-name">Cartões Amarelos</span>
                   <span>3</span>
+                  <span class="stat-name">Cartões Amarelos</span>
+                  <span>2</span>
                 </div>
                 <div class="bar-outer">
-                  <div class="bar-left" style="width: 40%;"></div>
-                  <div class="bar-right" style="width: 60%;"></div>
+                  <div class="bar-left" style="width: 60%;"></div>
+                  <div class="bar-right" style="width: 40%;"></div>
                 </div>
               </div>
             </div>
@@ -801,6 +797,7 @@
           <!-- Slide 3: Tactical field blueprint -->
           <div class="carousel-slide" id="slide2">
             <div class="tactical-field">
+              <div class="tactical-field-overlay" id="tacticalOverlay">Aguardando escalação...</div>
               <!-- Home Team players (Fortaleza) -->
               <div class="tactical-player team-home" style="left: 10%; top: 50%;" title="João Ricardo">1</div>
               <div class="tactical-player team-home" style="left: 26%; top: 20%;" title="Tinga">2</div>
@@ -836,8 +833,8 @@
                 <span class="timeline-time">10'</span>
                 <span class="timeline-badge" style="background: rgba(255,215,0,0.15);">⚽</span>
                 <div class="timeline-content">
-                  <div class="timeline-title">GOL DO CRB! (1 - 0)</div>
-                  <div class="timeline-desc">Anselmo Ramon cobra pênalti com categoria no canto esquerdo de João Ricardo.</div>
+                  <div class="timeline-title">GOL DO VITÓRIA! (1 - 0)</div>
+                  <div class="timeline-desc">Alerrandro cobra pênalti com categoria no canto esquerdo de João Ricardo.</div>
                 </div>
               </div>
               
@@ -854,8 +851,8 @@
                 <span class="timeline-time">35'</span>
                 <span class="timeline-badge" style="background: rgba(255,215,0,0.15);">⚽</span>
                 <div class="timeline-content">
-                  <div class="timeline-title">GOL DO CRB! (2 - 0)</div>
-                  <div class="timeline-desc">Léo Pereira aproveita rebote rápido na grande área e finaliza rasteiro sem chances.</div>
+                  <div class="timeline-title">GOL DO VITÓRIA! (2 - 0)</div>
+                  <div class="timeline-desc">Matheuzinho aproveita rebote rápido na grande área e finaliza rasteiro sem chances.</div>
                 </div>
               </div>
 
@@ -872,8 +869,8 @@
                 <span class="timeline-time">55'</span>
                 <span class="timeline-badge" style="background: rgba(220,53,69,0.25);">🟥</span>
                 <div class="timeline-content">
-                  <div class="timeline-title">CARTÃO VERMELHO! (CRB)</div>
-                  <div class="timeline-desc">Gustavo Henrique é expulso direto após carrinho violento em Pochettino. CRB com 10!</div>
+                  <div class="timeline-title">CARTÃO VERMELHO! (Vitória)</div>
+                  <div class="timeline-desc">Dudu é expulso direto após carrinho violento em Pochettino. Vitória com 10!</div>
                 </div>
               </div>
             </div>
@@ -954,24 +951,289 @@
     // Start auto rotation initially
     startAutoPlay();
 
+    // ── dynamic API rendering logic ──────────────────────────
+    function renderGameData(data) {
+      if (!data) return;
+
+      // 1. Render Lineups
+      let vitLineup = null;
+      let forLineup = null;
+
+      if (data.lineups && Array.isArray(data.lineups) && data.lineups.length >= 2) {
+        vitLineup = data.lineups.find(l => l.team && l.team.name && (l.team.name.toLowerCase().includes("vitória") || l.team.name.toLowerCase().includes("vitoria")));
+        forLineup = data.lineups.find(l => l.team && l.team.name && l.team.name.toLowerCase().includes("fortaleza"));
+
+        if (vitLineup) {
+          const vitList = document.querySelector("#slide0 .lineup-split > div:nth-child(1) .lineup-list");
+          const vitCoach = document.querySelector("#slide0 .lineup-split > div:nth-child(1) .coach-row");
+          if (vitList && Array.isArray(vitLineup.startXI)) {
+            vitList.innerHTML = vitLineup.startXI.map(p => `
+              <li class="lineup-item">
+                <span class="lineup-num">${(p.player && p.player.number) || ''}</span>
+                <span class="lineup-name">${(p.player && p.player.name) || ''}</span>
+              </li>
+            `).join('');
+          }
+          if (vitCoach && vitLineup.coach && vitLineup.coach.name) {
+            vitCoach.textContent = `Téc: ${vitLineup.coach.name}`;
+          }
+        }
+
+        if (forLineup) {
+          const forList = document.querySelector("#slide0 .lineup-split > div:nth-child(2) .lineup-list");
+          const forCoach = document.querySelector("#slide0 .lineup-split > div:nth-child(2) .coach-row");
+          if (forList && Array.isArray(forLineup.startXI)) {
+            forList.innerHTML = forLineup.startXI.map(p => `
+              <li class="lineup-item">
+                <span class="lineup-num">${(p.player && p.player.number) || ''}</span>
+                <span class="lineup-name">${(p.player && p.player.name) || ''}</span>
+              </li>
+            `).join('');
+          }
+          if (forCoach && forLineup.coach && forLineup.coach.name) {
+            forCoach.textContent = `Téc: ${forLineup.coach.name}`;
+          }
+        }
+      }
+
+      // 2. Render Statistics
+      if (data.statistics && Array.isArray(data.statistics) && data.statistics.length >= 2) {
+        const vitStats = data.statistics.find(s => s.team && s.team.name && (s.team.name.toLowerCase().includes("vitória") || s.team.name.toLowerCase().includes("vitoria")));
+        const forStats = data.statistics.find(s => s.team && s.team.name && s.team.name.toLowerCase().includes("fortaleza"));
+
+        if (vitStats && forStats) {
+          const statsContainer = document.querySelector("#slide1 .stats-container");
+          if (statsContainer) {
+            const getVal = (val) => typeof val === 'string' ? parseFloat(val) : (typeof val === 'number' ? val : 0);
+            
+            const vitPoss = getVal(vitStats.possession);
+            const forPoss = getVal(forStats.possession);
+            const totalPoss = (vitPoss + forPoss) || 100;
+            const vitPossPct = Math.round((vitPoss / totalPoss) * 100);
+            const forPossPct = Math.round((forPoss / totalPoss) * 100);
+
+            const vitShots = getVal(vitStats.shots);
+            const forShots = getVal(forStats.shots);
+            const totalShots = (vitShots + forShots) || 1;
+
+            const vitCorners = getVal(vitStats.corners);
+            const forCorners = getVal(forStats.corners);
+            const totalCorners = (vitCorners + forCorners) || 1;
+
+            const vitFouls = getVal(vitStats.fouls);
+            const forFouls = getVal(forStats.fouls);
+            const totalFouls = (vitFouls + forFouls) || 1;
+
+            const vitYel = getVal(vitStats.yellowCards);
+            const forYel = getVal(forStats.yellowCards);
+            const totalYel = (vitYel + forYel) || 1;
+
+            statsContainer.innerHTML = `
+              <!-- Posse de bola -->
+              <div class="stat-row">
+                <div class="stat-labels">
+                  <span>${vitPossPct}%</span>
+                  <span class="stat-name">Posse de Bola</span>
+                  <span>${forPossPct}%</span>
+                </div>
+                <div class="bar-outer">
+                  <div class="bar-left" style="width: ${vitPossPct}%;"></div>
+                  <div class="bar-right" style="width: ${forPossPct}%;"></div>
+                </div>
+              </div>
+
+              <!-- Finalizações -->
+              <div class="stat-row">
+                <div class="stat-labels">
+                  <span>${vitShots}</span>
+                  <span class="stat-name">Finalizações (Chutes)</span>
+                  <span>${forShots}</span>
+                </div>
+                <div class="bar-outer">
+                  <div class="bar-left" style="width: ${Math.round((vitShots/totalShots)*100)}%;"></div>
+                  <div class="bar-right" style="width: ${Math.round((forShots/totalShots)*100)}%;"></div>
+                </div>
+              </div>
+
+              <!-- Escanteios -->
+              <div class="stat-row">
+                <div class="stat-labels">
+                  <span>${vitCorners}</span>
+                  <span class="stat-name">Escanteios</span>
+                  <span>${forCorners}</span>
+                </div>
+                <div class="bar-outer">
+                  <div class="bar-left" style="width: ${Math.round((vitCorners/totalCorners)*100)}%;"></div>
+                  <div class="bar-right" style="width: ${Math.round((forCorners/totalCorners)*100)}%;"></div>
+                </div>
+              </div>
+
+              <!-- Faltas Cometidas -->
+              <div class="stat-row">
+                <div class="stat-labels">
+                  <span>${vitFouls}</span>
+                  <span class="stat-name">Faltas Cometidas</span>
+                  <span>${forFouls}</span>
+                </div>
+                <div class="bar-outer">
+                  <div class="bar-left" style="width: ${Math.round((vitFouls/totalFouls)*100)}%;"></div>
+                  <div class="bar-right" style="width: ${Math.round((forFouls/totalFouls)*100)}%;"></div>
+                </div>
+              </div>
+
+              <!-- Cartões Amarelos -->
+              <div class="stat-row">
+                <div class="stat-labels">
+                  <span>${vitYel}</span>
+                  <span class="stat-name">Cartões Amarelos</span>
+                  <span>${forYel}</span>
+                </div>
+                <div class="bar-outer">
+                  <div class="bar-left" style="width: ${Math.round((vitYel/totalYel)*100)}%;"></div>
+                  <div class="bar-right" style="width: ${Math.round((forYel/totalYel)*100)}%;"></div>
+                </div>
+              </div>
+            `;
+          }
+        }
+      }
+
+      // 3. Update Tactical Field players
+      const overlay = document.getElementById('tacticalOverlay');
+      if (vitLineup && forLineup && Array.isArray(vitLineup.startXI) && Array.isArray(forLineup.startXI) && vitLineup.startXI.length > 0) {
+        if (overlay) overlay.style.display = 'none';
+
+        const homeEls = document.querySelectorAll("#slide2 .tactical-player.team-home");
+        const awayEls = document.querySelectorAll("#slide2 .tactical-player.team-away");
+
+        vitLineup.startXI.forEach((p, idx) => {
+          if (homeEls[idx]) {
+            homeEls[idx].textContent = (p.player && p.player.number) || '';
+            homeEls[idx].title = (p.player && p.player.name) || '';
+            homeEls[idx].style.display = 'flex';
+          }
+        });
+        for (let i = vitLineup.startXI.length; i < homeEls.length; i++) {
+          if (homeEls[i]) homeEls[i].style.display = 'none';
+        }
+
+        forLineup.startXI.forEach((p, idx) => {
+          if (awayEls[idx]) {
+            awayEls[idx].textContent = (p.player && p.player.number) || '';
+            awayEls[idx].title = (p.player && p.player.name) || '';
+            awayEls[idx].style.display = 'flex';
+          }
+        });
+        for (let i = forLineup.startXI.length; i < awayEls.length; i++) {
+          if (awayEls[i]) awayEls[i].style.display = 'none';
+        }
+      } else {
+        if (overlay) overlay.style.display = 'flex';
+      }
+
+      // 4. Render Events Timeline
+      if (data.events && Array.isArray(data.events) && data.events.length > 0) {
+        const timelineContainer = document.querySelector("#slide3 .timeline-container");
+        if (timelineContainer) {
+          const typeIcons = {
+            'Goal': '⚽',
+            'Card': '🟨',
+            'Subst': '🔄',
+          };
+          timelineContainer.innerHTML = data.events.map(e => {
+            const isYellow = e.detail && e.detail.toLowerCase().includes("yellow");
+            const isRed = e.detail && e.detail.toLowerCase().includes("red");
+            let icon = typeIcons[e.type] || '📌';
+            if (e.type === 'Card' && isRed) icon = '🟥';
+            else if (e.type === 'Card' && isYellow) icon = '🟨';
+
+            const teamName = (e.team && e.team.name) || '';
+            const typeLabel = e.type === 'Goal' ? 'GOL DO ' : e.type === 'Card' ? 'CARTÃO (' : 'SUBSTITUIÇÃO (';
+            const suffix = e.type === 'Card' ? ')' : e.type === 'Subst' ? ')' : '!';
+            const title = `${typeLabel}${teamName.toUpperCase()}${suffix}`;
+            
+            let desc = '';
+            if (e.type === 'Goal') {
+              desc = `${e.player || ''} marca! ${e.assist ? ' Assistência de ' + e.assist : ''}`;
+            } else if (e.type === 'Card') {
+              desc = `${e.player || ''} recebe o cartão ${isRed ? 'vermelho direto!' : 'amarelo.'}`;
+            } else if (e.type === 'Subst') {
+              desc = `Sai: ${e.player || ''} | Entra: ${e.assist || ''}`;
+            }
+
+            return `
+              <div class="timeline-event">
+                <span class="timeline-time">${e.time || 0}'</span>
+                <span class="timeline-badge" style="background: rgba(255,255,255,0.05);">${icon}</span>
+                <div class="timeline-content">
+                  <div class="timeline-title">${title}</div>
+                  <div class="timeline-desc">${desc}</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+    }
+
+    function showWaitingState() {
+      // 1. Lineups Waiting State
+      const vitList = document.querySelector("#slide0 .lineup-split > div:nth-child(1) .lineup-list");
+      const vitCoach = document.querySelector("#slide0 .lineup-split > div:nth-child(1) .coach-row");
+      const forList = document.querySelector("#slide0 .lineup-split > div:nth-child(2) .lineup-list");
+      const forCoach = document.querySelector("#slide0 .lineup-split > div:nth-child(2) .coach-row");
+      
+      if (vitList) vitList.innerHTML = '<li class="lineup-item" style="color: var(--subtext); justify-content: center; padding: 20px 0;">Aguardando escalação...</li>';
+      if (vitCoach) vitCoach.textContent = 'Téc: Aguardando...';
+      if (forList) forList.innerHTML = '<li class="lineup-item" style="color: var(--subtext); justify-content: center; padding: 20px 0;">Aguardando escalação...</li>';
+      if (forCoach) forCoach.textContent = 'Téc: Aguardando...';
+
+      // 2. Stats Waiting State
+      const statsContainer = document.querySelector("#slide1 .stats-container");
+      if (statsContainer) {
+        statsContainer.innerHTML = '<div style="text-align: center; color: var(--subtext); padding: 40px 0; font-size: 0.8rem;">Aguardando início da partida para exibir estatísticas...</div>';
+      }
+
+      // 3. Tactical Field Waiting State
+      const overlay = document.getElementById('tacticalOverlay');
+      if (overlay) overlay.style.display = 'flex';
+
+      // 4. Events Waiting State
+      const timelineContainer = document.querySelector("#slide3 .timeline-container");
+      if (timelineContainer) {
+        timelineContainer.innerHTML = '<div style="text-align: center; color: var(--subtext); padding: 40px 0; font-size: 0.8rem;">Aguardando início da partida para exibir dados em tempo real...</div>';
+      }
+    }
+
     // ── dynamic API match updater ────────────────────────────
     const LEAGUE_ID = 612;
     async function updateMatchData() {
       try {
         const fixtures = await API.getFixtures();
+        // Match Fortaleza vs Vitória in Nordeste
         const matches = fixtures.filter(f =>
-          f.league && f.league.externalId === LEAGUE_ID &&
-          f.homeTeam && f.homeTeam.name.includes("Fortaleza") && f.awayTeam && f.awayTeam.name.includes("CRB")
+          (f.homeTeam && f.homeTeam.name.toLowerCase().includes("fortaleza") && f.awayTeam && (f.awayTeam.name.toLowerCase().includes("vitória") || f.awayTeam.name.toLowerCase().includes("vitoria"))) ||
+          (f.homeTeam && (f.homeTeam.name.toLowerCase().includes("vitória") || f.homeTeam.name.toLowerCase().includes("vitoria")) && f.awayTeam && f.awayTeam.name.toLowerCase().includes("fortaleza"))
         );
 
         if (matches && matches.length) {
+          // Sort by date descending to get the latest match (which is the 2nd leg)
+          matches.sort((a, b) => new Date(b.date) - new Date(a.date));
           const game2 = matches[0];
+          
           const isLive = API.isLive(game2.statusShort);
           const isFinished = API.isFinished(game2.statusShort);
 
-          // Update scores in center score banner
-          if (game2.homeGoals !== null) document.getElementById('liveScoreHome').textContent = game2.homeGoals;
-          if (game2.awayGoals !== null) document.getElementById('liveScoreAway').textContent = game2.awayGoals;
+          // Update scores in center score banner (Vitória is UI Left/Home, Fortaleza is UI Right/Away)
+          const isVitoriaHome = game2.homeTeam && (game2.homeTeam.name.toLowerCase().includes("vitória") || game2.homeTeam.name.toLowerCase().includes("vitoria"));
+
+          if (isVitoriaHome) {
+            if (game2.homeGoals !== null) document.getElementById('liveScoreHome').textContent = game2.homeGoals;
+            if (game2.awayGoals !== null) document.getElementById('liveScoreAway').textContent = game2.awayGoals;
+          } else {
+            if (game2.awayGoals !== null) document.getElementById('liveScoreHome').textContent = game2.awayGoals;
+            if (game2.homeGoals !== null) document.getElementById('liveScoreAway').textContent = game2.homeGoals;
+          }
 
           const indicator = document.getElementById('liveIndicator');
           const elapsed = document.getElementById('elapsedStatus');
@@ -995,12 +1257,30 @@
             indicator.innerHTML = `<span class="indicator-dot" style="background:var(--gold);"></span> AGUARDANDO`;
             elapsed.textContent = `INÍCIO: 🇧🇷 ${API.toBrazilTime(game2.date)}`;
           }
+
+          // Fetch full dynamic details
+          let targetGame = null;
+          try {
+            targetGame = await API.getFixture(game2.id || game2.externalId);
+          } catch(e) {
+            console.warn("Could not load game 2 details:", e);
+          }
+
+          // If game 2 has lineups/stats, render them. Otherwise, show waiting state.
+          if (targetGame && targetGame.lineups && targetGame.lineups.length > 0) {
+            renderGameData(targetGame);
+          } else {
+            showWaitingState();
+          }
+        } else {
+          showWaitingState();
         }
       } catch (err) {
         console.warn("Could not load dynamic match data:", err);
       }
     }
 
+    showWaitingState();
     updateMatchData();
     setInterval(updateMatchData, CONFIG.REFRESH_INTERVAL);
 

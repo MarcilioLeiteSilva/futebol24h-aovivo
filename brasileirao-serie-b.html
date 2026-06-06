@@ -120,7 +120,7 @@
     </div>
   </header>
 
-  <div class="page-wrap">
+  <main class="page-wrap">
     <div class="page-title">
       <h1>🏆 BRASILEIRÃO SÉRIE B</h1>
       <p>JOGOS DO DIA E TABELA DE CLASSIFICAÇÃO EM TEMPO REAL</p>
@@ -132,12 +132,52 @@
       <!-- Left Column: Fixtures (Agenda) -->
       <div class="fixtures-column">
         <h2 style="font-family: var(--font-disp); font-size: 1.6rem; color: var(--gold); margin-bottom: 12px; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,215,0,0.2); padding-bottom: 8px;">📅 JOGOS DE HOJE</h2>
-        <div class="date-nav" id="dateNav" style="padding: 0 0 12px; justify-content: flex-start;"></div>
         <div class="fixtures-wrap">
-          <div class="loading-state" id="fixturesList">
-            <div class="spinner"></div>
-            <span>Carregando partidas...</span>
+          
+          <!-- Round header -->
+          <div class="round-header">BRASILEIRÃO SÉRIE B 2026 – RODADA 12</div>
+
+          <!-- Hardcoded: Operário x Juventude -->
+          <div class="fixture-card brasil-match" id="matchCard" style="margin-bottom: 16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+              <!-- Home: Operário-PR -->
+              <div class="team-side">
+                <img class="team-logo"
+                  src="https://media.api-sports.io/football/teams/1223.png"
+                  alt="Operário-PR"
+                  onerror="this.style.opacity=.3">
+                <div class="team-info">
+                  <div class="team-name">Operário-PR</div>
+                  <div class="team-code">OPE</div>
+                </div>
+              </div>
+
+              <!-- Match center -->
+              <div class="match-center">
+                <div id="scoreDisplay">
+                  <div class="time-block">
+                    <div class="time-brt">🇧🇷 21:00</div>
+                  </div>
+                </div>
+                <div class="status-tag" id="statusTag">Aguardando</div>
+                <div class="venue-tag" style="font-size:0.5rem;">📍 Ponta Grossa, PR</div>
+              </div>
+
+              <!-- Away: Juventude -->
+              <div class="team-side away">
+                <img class="team-logo"
+                  src="https://media.api-sports.io/football/teams/152.png"
+                  alt="Juventude"
+                  onerror="this.style.opacity=.3">
+                <div class="team-info">
+                  <div class="team-name">Juventude</div>
+                  <div class="team-code">JUV</div>
+                </div>
+              </div>
+            </div>
+            <a href="brasileirao-serie-b-ao-vivo.html?id=73ce79aa-c9a9-4515-88cd-e84374d00b58" class="watch-live-btn" id="watchBtn">📺 ASSISTIR TRANSMISSÃO AO VIVO</a>
           </div>
+
         </div>
       </div>
 
@@ -159,7 +199,7 @@
       </div>
 
     </div>
-  </div>
+  </main>
 
   <footer class="footer">
     <span>© 2026 Brasileirão Série B · Cobertura de Transmissão 24h</span>
@@ -169,7 +209,8 @@
   <script src="config.js"></script>
   <script src="api.js"></script>
   <script>
-    // ── LEAGUE CONFIG ─────────────────────────────────────────
+    // ── MATCH ID (Operário-PR x Juventude — Rodada 12) ────────
+    const MATCH_ID = '73ce79aa-c9a9-4515-88cd-e84374d00b58';
     const LEAGUE_ID = 72;
 
     // ── clocks ──────────────────────────────────────────────
@@ -188,118 +229,34 @@
     }
     updateClocks(); setInterval(updateClocks, 1000);
 
-    // ── fixtures & standings logic ───────────────────────────
-    let leagueFixtures = [];
-    let selectedDate = null;
+    // ── live score updater ───────────────────────────────────
+    async function updateLiveScore() {
+      try {
+        const f = await API.getFixture(MATCH_ID);
+        if (!f) return;
+        const live    = API.isLive(f.statusShort);
+        const done    = API.isFinished(f.statusShort);
+        const hasGoals = f.homeGoals !== null && f.awayGoals !== null;
+        const card    = document.getElementById('matchCard');
+        const scorEl  = document.getElementById('scoreDisplay');
+        const statEl  = document.getElementById('statusTag');
 
-    function brtDateStr(utcStr){
-      return new Date(utcStr).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'});
-    }
+        // toggle live glow on the card
+        card.classList.toggle('is-live', live);
+        card.classList.toggle('is-done', done);
 
-    function buildDateNav(){
-      const nav = document.getElementById('dateNav');
-      const dates = [...new Set(leagueFixtures.map(f => brtDateStr(f.date)))].sort((a,b) => {
-        const [d1,m1,y1] = a.split('/'); const [d2,m2,y2] = b.split('/');
-        return new Date(`${y1}-${m1}-${d1}`) - new Date(`${y2}-${m2}-${d2}`);
-      });
+        // score / time display
+        if (hasGoals) {
+          scorEl.innerHTML = `<div class="score">${f.homeGoals} – ${f.awayGoals}</div>`;
+        } else {
+          scorEl.innerHTML = `<div class="time-block"><div class="time-brt">🇧🇷 20:00</div></div>`;
+        }
 
-      if(!dates.length) {
-        nav.innerHTML = '<span style="font-size:0.75rem; color:var(--subtext);">Nenhum jogo agendado.</span>';
-        selectedDate = null;
-        return;
-      }
-
-      if(!selectedDate || !dates.includes(selectedDate)){
-        const today = brtDateStr(new Date().toISOString());
-        selectedDate = dates.includes(today) ? today : dates[0];
-      }
-
-      const idx = dates.indexOf(selectedDate);
-      const start = Math.max(0, idx - 2);
-      const end = Math.min(dates.length - 1, idx + 2);
-      nav.innerHTML = '';
-
-      dates.slice(start, end + 1).forEach(ds => {
-        const [d,m,y] = ds.split('/');
-        const lbl = new Date(`${y}-${m}-${d}`).toLocaleDateString('pt-BR', {weekday: 'short', day: '2-digit', month: 'short'});
-        const btn = document.createElement('button');
-        btn.className = 'date-btn' + (ds === selectedDate ? ' active' : '');
-        btn.textContent = lbl.toUpperCase();
-        btn.onclick = () => { selectedDate = ds; buildDateNav(); renderFixtures(); };
-        nav.appendChild(btn);
-      });
-    }
-
-    function renderFixtures(){
-      const wrap = document.getElementById('fixturesList');
-      const day = leagueFixtures
-        .filter(f => selectedDate === null || brtDateStr(f.date) === selectedDate)
-        .sort((a,b) => new Date(a.date) - new Date(b.date));
-
-      if(!day.length){
-        wrap.innerHTML = '<div class="loading-state"><span>Sem jogos nesta data.</span></div>';
-        return;
-      }
-
-      wrap.innerHTML = '';
-      const rounds = {};
-      day.forEach(f => {
-        const roundName = f.round || 'Rodada Geral';
-        if(!rounds[roundName]) rounds[roundName] = [];
-        rounds[roundName].push(f);
-      });
-
-      Object.entries(rounds).forEach(([round, fixtures]) => {
-        const rh = document.createElement('div');
-        rh.className = 'round-header';
-        rh.textContent = round.replace('Regular Season','Rodada').replace('-','–').toUpperCase();
-        wrap.appendChild(rh);
-
-        fixtures.forEach(f => {
-          const live = API.isLive(f.statusShort);
-          const done = API.isFinished(f.statusShort);
-          const hasScore = f.homeGoals !== null && f.awayGoals !== null;
-          
-          const isHighlight = (CONFIG.HIGHLIGHT_TEAMS || []).some(team => 
-            (f.homeTeam?.name && f.homeTeam.name.toLowerCase().includes(team.toLowerCase())) || 
-            (f.awayTeam?.name && f.awayTeam.name.toLowerCase().includes(team.toLowerCase()))
-          );
-
-          const card = document.createElement('div');
-          card.className = 'fixture-card' + (live ? ' is-live' : '') + (done ? ' is-done' : '') + (isHighlight ? ' brasil-match' : '');
-
-          card.innerHTML = `
-            <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
-              <div class="team-side">
-                <img class="team-logo" src="${f.homeTeam.logo}" alt="${f.homeTeam.name}" onerror="this.style.opacity=.3">
-                <div class="team-info">
-                  <div class="team-name">${f.homeTeam.name}</div>
-                  <div class="team-code">${f.homeTeam.code || ''}</div>
-                </div>
-              </div>
-              <div class="match-center">
-                ${hasScore
-                  ? `<div class="score">${f.homeGoals} – ${f.awayGoals}</div>`
-                  : `<div class="time-block">
-                      <div class="time-brt">🇧🇷 ${API.toBrazilTime(f.date)}</div>
-                    </div>`
-                }
-                <div class="status-tag${live ? ' live' : ''}">${live ? '🔴 ' : ''}${API.statusLabel(f.statusShort, f.elapsed)}</div>
-                <div class="venue-tag" style="font-size:0.5rem;">📍 ${f.venueCity || ''}</div>
-              </div>
-              <div class="team-side away">
-                <img class="team-logo" src="${f.awayTeam.logo}" alt="${f.awayTeam.name}" onerror="this.style.opacity=.3">
-                <div class="team-info">
-                  <div class="team-name">${f.awayTeam.name}</div>
-                  <div class="team-code">${f.awayTeam.code || ''}</div>
-                </div>
-              </div>
-            </div>
-            <a href="brasileirao-serie-b-ao-vivo.html?id=${f.id || f.externalId}" class="watch-live-btn">📺 ASSISTIR TRANSMISSÃO AO VIVO</a>
-          `;
-          wrap.appendChild(card);
-        });
-      });
+        // status label
+        const label = API.statusLabel(f.statusShort, f.elapsed);
+        statEl.className  = 'status-tag' + (live ? ' live' : '');
+        statEl.textContent = (live ? '🔴 ' : '') + label;
+      } catch(e) { /* silent — keep showing last data */ }
     }
 
     async function renderStandings(){
@@ -362,28 +319,15 @@
     }
 
     async function init(){
-      try {
-        const all = await API.getFixtures();
-        leagueFixtures = all.filter(f => f.league && f.league.externalId === LEAGUE_ID);
-        buildDateNav();
-        renderFixtures();
-        await renderStandings();
-      } catch (e) {
-        document.getElementById('fixturesList').innerHTML = `<div class="loading-state"><span>⚠️ ${e.message}</span></div>`;
-      }
+      await renderStandings();
+      await updateLiveScore();
     }
 
     init();
-    
-    // Auto refresh data every 30s
-    setInterval(async () => {
-      try {
-        const all = await API.getFixtures();
-        leagueFixtures = all.filter(f => f.league && f.league.externalId === LEAGUE_ID);
-        renderFixtures();
-        await renderStandings();
-      } catch(_) {}
-    }, CONFIG.REFRESH_INTERVAL);
+
+    // Refresh score every 30s, standings every 60s
+    setInterval(updateLiveScore, CONFIG.REFRESH_INTERVAL);
+    setInterval(renderStandings, CONFIG.REFRESH_INTERVAL * 2);
 
     // particles
     const cv=document.getElementById('particleCanvas'),ctx2=cv.getContext('2d');

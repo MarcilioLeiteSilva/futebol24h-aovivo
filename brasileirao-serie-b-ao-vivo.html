@@ -44,6 +44,12 @@
       letter-spacing: 0.1em;
       color: #fff;
     }
+    .score-logo {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      margin: 0 4px;
+    }
     .score-digits {
       font-family: var(--font-head);
       font-size: 1.2rem;
@@ -533,19 +539,11 @@
     <div class="top-bar__center-score">
       <div class="score-banner">
         <span class="score-team" id="scoreTeamHome">HOME</span>
-        <!-- Home SVG Shield Logo -->
-        <svg class="score-svg" viewBox="0 0 100 100" width="22" height="22" style="display: inline-block; vertical-align: middle; margin: 0 4px;">
-          <path d="M10 10 L90 10 C90 60 50 95 50 95 C50 95 10 60 10 10 Z" fill="#003087" stroke="#fff" stroke-width="4"/>
-          <text x="50" y="55" font-family="'Orbitron', sans-serif" font-weight="900" font-size="28" fill="#fff" text-anchor="middle">H</text>
-        </svg>
+        <img id="scoreLogoHome" class="score-logo" src="" alt="H" style="opacity:0;">
         <span class="score-digits" id="liveScoreHome">0</span>
         <span class="score-separator">:</span>
         <span class="score-digits" id="liveScoreAway">0</span>
-        <!-- Away SVG Shield Logo -->
-        <svg class="score-svg" viewBox="0 0 100 100" width="22" height="22" style="display: inline-block; vertical-align: middle; margin: 0 4px;">
-          <path d="M10 15 L90 15 L90 50 C90 75 50 95 50 95 C50 95 10 75 10 50 Z" fill="#C8102E" stroke="#fff" stroke-width="4"/>
-          <text x="50" y="58" font-family="'Orbitron', sans-serif" font-weight="900" font-size="28" fill="#fff" text-anchor="middle">A</text>
-        </svg>
+        <img id="scoreLogoAway" class="score-logo" src="" alt="A" style="opacity:0;">
         <span class="score-team" id="scoreTeamAway">AWAY</span>
         <span class="live-indicator-tag" id="liveIndicator"><span class="indicator-dot"></span> AGUARDANDO</span>
       </div>
@@ -868,11 +866,22 @@
         
         matchCached = fixture;
 
-        // Update titles
+        // Update titles and logos
         const hName = fixture.homeTeam?.name || 'MANDANTE';
         const aName = fixture.awayTeam?.name || 'VISITANTE';
+        
         document.getElementById('scoreTeamHome').textContent = hName.toUpperCase();
+        if (fixture.homeTeam?.logo) {
+          document.getElementById('scoreLogoHome').src = fixture.homeTeam.logo;
+          document.getElementById('scoreLogoHome').style.opacity = 1;
+        }
+
         document.getElementById('scoreTeamAway').textContent = aName.toUpperCase();
+        if (fixture.awayTeam?.logo) {
+          document.getElementById('scoreLogoAway').src = fixture.awayTeam.logo;
+          document.getElementById('scoreLogoAway').style.opacity = 1;
+        }
+
         document.getElementById('streamMatchTitle').textContent = `${hName} x ${aName}`;
         document.getElementById('lineupTitleHome').textContent = `🦁 ${hName}`;
         document.getElementById('lineupTitleAway').textContent = `🔴 ${aName}`;
